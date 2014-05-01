@@ -1,4 +1,4 @@
-#include "Pipe.h"
+#include "comm/Pipe.h"
 
 Pipe :: Pipe() : lectura(true), escritura(true) {
 	pipe ( this->descriptores );

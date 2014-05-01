@@ -12,15 +12,15 @@
 class Logger {
 
 private:
-	std::ostream _output;
+	std::ofstream _output;
 	unsigned short int _logLevel;
 	struct tm* _currentTime;
-	Logger _logger;
+	static Logger* _logger;
 
-	Logger(std::ostream oFile, unsigned short int logLevel) : _output(oFile), _logLevel(logLevel) {
-		_currentTime = NULL;
+	Logger() : _logLevel(Logger::LOG_NOTICE), _currentTime(NULL) {};
+	virtual ~Logger() {
+		_output.close();
 	};
-	virtual ~Logger() {};
 
 public:
 	// TODO: ¿Algun level mas? Creo que son suficientes
@@ -33,18 +33,24 @@ public:
 	 * oFile: archivo creado y con permiso de escritura
 	 * logLevel: representa uno de los 4 niveles soportados por la clase
 	 * */
-	static void initialize(std::ostream oFile, unsigned short int logLevel) {
-		if (!_logger)	_logger = new Logger(oFile, logLevel);
+	static void initialize(const char* filename, unsigned short int logLevel) {
+		// TODO: Ptr Error check
+		if (!_logger)
+			_logger = new Logger();
+
+		// TODO: File Error check
+		_logger->_output.open(filename,std::ofstream::out);
+		_logger->_logLevel = logLevel;
 	};
 
 	static void setLogLevel( unsigned short int logLevel) {
-		_logLevel = logLevel;
+		_logger->_logLevel = logLevel;
 	}
 
 	/*
 	 * Loggea mensaje si y solo si el logLevel es mayor al setteado en la inicializacion
 	 * */
-	static void log(std::string msg, unsigned short int logLevel);
+	static void log(const std::string& msg, unsigned short int logLevel);
 
 };
 

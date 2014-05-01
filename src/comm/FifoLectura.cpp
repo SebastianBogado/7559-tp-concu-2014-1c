@@ -1,4 +1,4 @@
-#include "FifoLectura.h"
+#include "comm/FifoLectura.h"
 
 FifoLectura::FifoLectura(const std::string nombre) : Fifo(nombre) {
 }

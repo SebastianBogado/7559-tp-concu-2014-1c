@@ -1,4 +1,4 @@
-#include "SignalHandler.h"
+#include "signal/SignalHandler.h"
 
 SignalHandler* SignalHandler :: instance = NULL;
 EventHandler* SignalHandler :: signal_handlers [ NSIG ];
