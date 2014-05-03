@@ -6,20 +6,23 @@
 #ifndef __LOGGER_H__
 #define __LOGGER_H__
 
+#include <iostream>
 #include <fstream>
 #include <ctime>
+#include <sstream>
+#include "sync/LockFile.h"
 
 class Logger {
 
 private:
-	std::ofstream _output;
+	LockFile _output;
 	unsigned short int _logLevel;
 	struct tm* _currentTime;
 	static Logger* _logger;
 
-	Logger() : _logLevel(Logger::LOG_NOTICE), _currentTime(NULL) {};
+	Logger(const char* filename) : _output(filename), _logLevel(Logger::LOG_NOTICE), _currentTime(NULL) {};
 	virtual ~Logger() {
-		_output.close();
+		//delete _output;
 	};
 
 public:
@@ -30,18 +33,21 @@ public:
 	static const unsigned short int LOG_CRITICAL = 4;
 
 	/*
-	 * oFile: archivo creado y con permiso de escritura
+	 * filename: nombre del archivo a crear
 	 * logLevel: representa uno de los 4 niveles soportados por la clase
 	 * */
 	static void initialize(const char* filename, unsigned short int logLevel) {
 		// TODO: Ptr Error check
-		if (!_logger)
-			_logger = new Logger();
-
-		// TODO: File Error check
-		_logger->_output.open(filename,std::ofstream::out);
-		_logger->_logLevel = logLevel;
+		if (!_logger) {
+			_logger = new Logger(filename);
+			_logger->_logLevel = logLevel;
+		}
 	};
+
+	static void destroy() {
+		if (_logger)
+			delete _logger;
+	}
 
 	static void setLogLevel( unsigned short int logLevel) {
 		_logger->_logLevel = logLevel;

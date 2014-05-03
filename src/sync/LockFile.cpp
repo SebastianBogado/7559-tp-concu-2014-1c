@@ -1,4 +1,4 @@
-#include "LockFile.h"
+#include "sync/LockFile.h"
 
 LockFile::LockFile (const std::string nombre ){
 	this->nombre = nombre;
