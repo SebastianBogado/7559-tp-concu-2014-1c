@@ -10,7 +10,7 @@
 
 #include "logger/Logger.h"
 
-const char* logFile = "/home/ferno/ferno/FIUBA/Concurrentes/TP1/log.txt";
+const char* logFile = "log.txt";
 
 int main(int argc, char* argv[]) {
 
