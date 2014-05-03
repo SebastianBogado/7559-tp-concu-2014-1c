@@ -8,15 +8,25 @@
 *
 */
 
+#include "logger/Logger.h"
+
+const char* logFile = "/home/ferno/ferno/FIUBA/Concurrentes/TP1/log.txt";
+
 int main(int argc, char* argv[]) {
 
-	// Init Logger (static)
+	// Init Logger
+	Logger::initialize(logFile,Logger::LOG_DEBUG);
 
-	// Parse command line (--cant-surtidores --cant-empleados ¿fifo name?)
+	// Parse command line (--cant-surtidores --cant-empleados ¿--log-filename?)
+	Logger::log("Se ha parseado la linea de comandos",Logger::LOG_DEBUG);
 
-	// create jefeEstacion child process
+	// Fork&Exev jefeEstacion
+	Logger::log("Se ha creado el hijo Jefe De Estacion",Logger::LOG_NOTICE);
 
-	// create empleados child process
+	// Fork&Execv Employees
+	Logger::log("Se han creado los child process",Logger::LOG_CRITICAL);
+
+	Logger::destroy();
 
 	return 0;
 }
