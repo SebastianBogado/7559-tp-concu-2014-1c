@@ -22,3 +22,7 @@
 
 # Bin folder
 /bin
+
+# IDE files
+.cproject
+.project
