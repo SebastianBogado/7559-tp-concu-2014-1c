@@ -9,8 +9,7 @@
 */
 
 #include "logger/Logger.h"
-
-const char* logFile = "log.txt";
+#include "common.h"
 
 int main(int argc, char* argv[]) {
 
