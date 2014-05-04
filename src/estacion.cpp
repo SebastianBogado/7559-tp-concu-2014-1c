@@ -32,10 +32,9 @@ int main(int argc, char* argv[]) {
     Logger::log("Error creando el hijo JefeEstacion", Logger::LOG_CRITICAL);
     exit(1);
   }
-
+	
 	// Fork & Execv Employees
 	Logger::log("Creando procesos para empleados", Logger::LOG_CRITICAL);
-
 	Logger::destroy();
 
 	return 0;
