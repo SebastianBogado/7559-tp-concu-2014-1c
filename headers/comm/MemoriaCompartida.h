@@ -32,7 +32,7 @@ public:
 	T leer () const;
 };
 
-template <class T> MemoriaCompartida<T>::MemoriaCompartida ():shmId(0),ptrDatos(NULL), me("MemoriaCompartida.h") {
+template <class T> MemoriaCompartida<T>::MemoriaCompartida ():shmId(0),ptrDatos(NULL), me(__FILE__) {
 }
 
 template <class T> void MemoriaCompartida<T>::crear ( const std::string& archivo,const char letra ) {
@@ -79,7 +79,7 @@ template <class T> void MemoriaCompartida<T>::liberar() {
 	}
 }
 
-template <class T> MemoriaCompartida<T>::MemoriaCompartida ( const std::string& archivo,const char letra ):shmId(0),ptrDatos(NULL), me("MemoriaCompartida.h") {
+template <class T> MemoriaCompartida<T>::MemoriaCompartida ( const std::string& archivo,const char letra ):shmId(0),ptrDatos(NULL), me(__FILE__) {
 	std::string me = this->me + ":MemoriaCompartida(const std::string& , const char )";
 	key_t clave = ftok ( archivo.c_str(),letra );
 
