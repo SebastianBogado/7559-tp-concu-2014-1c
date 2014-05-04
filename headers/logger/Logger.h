@@ -10,6 +10,7 @@
 #include <fstream>
 #include <ctime>
 #include <sstream>
+#include <iomanip>
 #include "sync/LockFile.h"
 
 class Logger {
@@ -24,6 +25,8 @@ private:
 	virtual ~Logger() {
 		//delete _output;
 	};
+
+	static std::string prependCaller(const std::string& msg, const std::string& caller);
 
 public:
 	// TODO: ¿Algun level mas? Creo que son suficientes
@@ -57,6 +60,26 @@ public:
 	 * Loggea mensaje si y solo si el logLevel es mayor al setteado en la inicializacion
 	 * */
 	static void log(const std::string& msg, unsigned short int logLevel);
+
+	/*
+	 * Loggea mensaje si y solo si el logLevel es mayor al setteado en la inicializacion
+	 * Prefija el mensaje con el nombre de quien loguea
+	 * */
+	static void log(const std::string& msg, unsigned short int logLevel, const std::string& caller);
+
+	/*
+	 * Las siguientes funciones loguean el mensaje sólo si el logLevel seteado en la inicialización
+	 * es mayor a lo que indica el nombre de la función.
+	 * El segundo parámetro es prefijado ante el mensaje, si aparece
+	 * */
+	static void debug(const std::string& msg);
+	static void debug(const std::string& msg, const std::string& caller);
+	static void notice(const std::string& msg);
+	static void notice(const std::string& msg, const std::string& caller);
+	static void warn(const std::string& msg);
+	static void warn(const std::string& msg, const std::string& caller);
+	static void error(const std::string& msg);
+	static void error(const std::string& msg, const std::string& caller);
 
 };
 
