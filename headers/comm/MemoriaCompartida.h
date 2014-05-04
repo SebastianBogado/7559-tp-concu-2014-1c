@@ -8,12 +8,14 @@
 #include <string.h>
 #include <iostream>
 #include <errno.h>
+#include "logger/Logger.h"
 
 template <class T> class MemoriaCompartida {
 
 private:
 	int	shmId;
 	T*	ptrDatos;
+	std::string me;  // Debugging purposes
 
 	int	cantidadProcesosAdosados() const;
 
@@ -30,10 +32,11 @@ public:
 	T leer () const;
 };
 
-template <class T> MemoriaCompartida<T>::MemoriaCompartida ():shmId(0),ptrDatos(NULL) {
+template <class T> MemoriaCompartida<T>::MemoriaCompartida ():shmId(0),ptrDatos(NULL), me("MemoriaCompartida.h") {
 }
 
 template <class T> void MemoriaCompartida<T>::crear ( const std::string& archivo,const char letra ) {
+	std::string me = this->me + ":crear";
 	key_t clave = ftok ( archivo.c_str(),letra );
 
 	if ( clave > 0 ) {
@@ -45,19 +48,23 @@ template <class T> void MemoriaCompartida<T>::crear ( const std::string& archivo
 				this->ptrDatos = static_cast<T*> (tmpPtr);
 			} else {
 				std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
+				Logger::error(mensaje, me);
 				throw mensaje;
 			}
 		} else {
 			std::string mensaje = std::string("Error en shmget(): ") + std::string(strerror(errno));
+			Logger::error(mensaje, me);
 			throw mensaje;
 		}
 	} else {
 		std::string mensaje = std::string("Error en ftok(): ") + std::string(strerror(errno));
+		Logger::error(mensaje, me);
 		throw mensaje;
 	}
 }
 
 template <class T> void MemoriaCompartida<T>::liberar() {
+	std::string me = this->me + ":liberar";
 	int errorDt = shmdt ( (void *) this->ptrDatos );
 
 	if ( errorDt != -1 ) {
@@ -67,11 +74,13 @@ template <class T> void MemoriaCompartida<T>::liberar() {
 		}
 	} else {
 		std::string mensaje = std::string("Error en shmdt(): ") + std::string(strerror(errno));
+		Logger::error(mensaje, me);
 		throw mensaje;
 	}
 }
 
-template <class T> MemoriaCompartida<T>::MemoriaCompartida ( const std::string& archivo,const char letra ):shmId(0),ptrDatos(NULL) {
+template <class T> MemoriaCompartida<T>::MemoriaCompartida ( const std::string& archivo,const char letra ):shmId(0),ptrDatos(NULL), me("MemoriaCompartida.h") {
+	std::string me = this->me + ":MemoriaCompartida(const std::string& , const char )";
 	key_t clave = ftok ( archivo.c_str(),letra );
 
 	if ( clave > 0 ) {
@@ -83,30 +92,36 @@ template <class T> MemoriaCompartida<T>::MemoriaCompartida ( const std::string& 
 				this->ptrDatos = static_cast<T*> (tmpPtr);
 			} else {
 				std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
+				Logger::error(mensaje, me);
 				throw mensaje;
 			}
 		} else {
 			std::string mensaje = std::string("Error en shmget(): ") + std::string(strerror(errno));
+			Logger::error(mensaje, me);
 			throw mensaje;
 		}
 	} else {
 		std::string mensaje = std::string("Error en ftok(): ") + std::string(strerror(errno));
+		Logger::error(mensaje, me);
 		throw mensaje;
 	}
 }
 
 template <class T> MemoriaCompartida<T>::MemoriaCompartida ( const MemoriaCompartida& origen ):shmId(origen.shmId) {
+	std::string me = this->me + ":MemoriaCompartida(const MemoriaCompartida& )";
 	void* tmpPtr = shmat ( origen.shmId,NULL,0 );
 
 	if ( tmpPtr != (void*) -1 ) {
 		this->ptrDatos = static_cast<T*> (tmpPtr);
 	} else {
 		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
+		Logger::error(mensaje, me);
 		throw mensaje;
 	}
 }
 
 template <class T> MemoriaCompartida<T>::~MemoriaCompartida () {
+	std::string me = this->me + ":~MemoriaCompartida";
 	int errorDt = shmdt ( static_cast<void*> (this->ptrDatos) );
 
 	if ( errorDt != -1 ) {
@@ -115,11 +130,14 @@ template <class T> MemoriaCompartida<T>::~MemoriaCompartida () {
 			shmctl ( this->shmId,IPC_RMID,NULL );
 		}
 	} else {
-		std::cerr << "Error en shmdt(): " << strerror(errno) << std::endl;
+		std::string mensaje = "Error en shmdt(): " << strerror(errno);
+		std::cerr << mensaje << std::endl;
+		Logger::error(mensaje, me);
 	}
 }
 
 template <class T> MemoriaCompartida<T>& MemoriaCompartida<T>::operator= ( const MemoriaCompartida& origen ) {
+	std::string me = this->me + ":operator=";
 	this->shmId = origen.shmId;
 	void* tmpPtr = shmat ( this->shmId,NULL,0 );
 
@@ -127,6 +145,7 @@ template <class T> MemoriaCompartida<T>& MemoriaCompartida<T>::operator= ( const
 		this->ptrDatos = static_cast<T*> (tmpPtr);
 	} else {
 		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
+		Logger::error(mensaje, me);
 		throw mensaje;
 	}
 
