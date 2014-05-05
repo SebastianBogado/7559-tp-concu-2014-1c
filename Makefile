@@ -28,8 +28,8 @@ estacion: $(ESTACION_OBJ) $(SHARED_OBJ)
 jefeEstacion: $(JEFE_OBJ) $(SHARED_OBJ)
 	$(CC) $(SHARED_OBJ) $(JEFE_OBJ) -o $(JEFE_BIN) -I$(HEADER_DIR)
 
-input: $(INPUT_OBJ)
-	$(CC) $(INPUT_OBJ) -o $(INPUT_BIN)
+input: $(INPUT_OBJ) $(SHARED_OBJ)
+	$(CC) $(INPUT_OBJ) $(SHARED_OBJ) -o $(INPUT_BIN)
 
 .cpp.o:
 	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
