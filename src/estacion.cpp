@@ -25,9 +25,6 @@ int main(int argc, char* argv[]) {
 
 	// Ret val para los fork
 	pid_t pid;
-
-	// Fork & Execv Employees
-	Logger::log("Creando procesos para empleados", Logger::LOG_CRITICAL);
 	pid = fork();
 	if(pid == 0) {
 		Logger::log("Creando proceso JefeEstacion", Logger::LOG_NOTICE, me);
