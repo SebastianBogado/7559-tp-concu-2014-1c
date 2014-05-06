@@ -15,11 +15,14 @@
 #include <list>
 #include "comm/ArrayCompartido.h"
 #include "Semaforo.h"
+#include "Pipe.h"
 
 class GrillaEmpleado {
 private:
 	ArrayCompartido<unsigned int> _mem;
 	Semaforo _sems[];
+
+	Pipe _pipes[];
 
 public:
 	GrillaEmpleado(unsigned int cantEmpleados);
@@ -31,8 +34,11 @@ public:
 	// Devuelve el ID de algun emplado libre. Si no hay ninguno libre, devuelve -1
 	unsigned int getEmpleadoLibre() const;
 
-	// Metodo usado por el jefe para asignar un auto al empleado con numero ID
+	// Metodo usado por el jefe para marcar la LookUpTable como empleado asignado
 	void asignarTrabajo(unsigned int idAuto, unsigned int idEmpleado);
+
+	// Metodo usado por el empleado para esperar su siguiente trabajo
+	unsigned int GrillaEmpleado::esperarTrabajo(unsigned int idEmpleado);
 
 	// Metodo usado por un empleado que se libera de su trabajo para avisar al jefe
 	void avisarTrabajoTerminado(unsigned int idEmpleado);
