@@ -14,6 +14,8 @@
 
 #include "sync/Semaforo.h"
 #include "comm/ArrayCompartido.h"
+#include <vector>
+#include "common.h"
 
 class Surtidores {
 private:

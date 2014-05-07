@@ -32,7 +32,7 @@ void Surtidores::inicializarSurtidores() {
 	}
 }
 
-virtual Surtidores::~Surtidores() {
+Surtidores::~Surtidores() {
 	_surtidores.liberar();
 
 	for (unsigned int i = 0; i < _sems.size(); i++)
@@ -43,7 +43,7 @@ virtual Surtidores::~Surtidores() {
 
 unsigned int Surtidores::conseguirSurtidorLibre(unsigned int idEmpleado) {
 	_surtidoresDisponibles.p();
-	unsigned int idSurtidorAsignado = -1;
+	int idSurtidorAsignado = -1;
 	for(unsigned int i = 0; (i < _sems.size()) && (idSurtidorAsignado == -1); i++) {
 		_sems[i].p();
 		unsigned int ocupado = _surtidores.leer(i);
