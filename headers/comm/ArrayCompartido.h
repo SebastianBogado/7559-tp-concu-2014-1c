@@ -41,7 +41,7 @@ public:
 	unsigned int size() const;
 };
 
-template <class T> ArrayCompartido<T>::ArrayCompartido ():shmId(0),ptrDatos(NULL), me(__FILE__), _size(0) {
+template <class T> ArrayCompartido<T>::ArrayCompartido():shmId(0),ptrDatos(NULL),_size(0),me(__FILE__) {
 }
 
 template <class T> void ArrayCompartido<T>::crear(const std::string& archivo,const char letra,const unsigned int tam) {
@@ -88,7 +88,7 @@ template <class T> void ArrayCompartido<T>::liberar() {
 	}
 }
 
-template <class T> ArrayCompartido<T>::ArrayCompartido(const std::string& archivo,const char letra,const unsigned int tam):shmId(0),ptrDatos(NULL), me(__FILE__),_size(tam) {
+template <class T> ArrayCompartido<T>::ArrayCompartido(const std::string& archivo,const char letra,const unsigned int tam):shmId(0),ptrDatos(NULL),_size(tam),me(__FILE__) {
 	std::string me = this->me + ":ArrayCompartido(const std::string& , const char )";
 	key_t clave = ftok ( archivo.c_str(),letra );
 
@@ -116,7 +116,7 @@ template <class T> ArrayCompartido<T>::ArrayCompartido(const std::string& archiv
 	}
 }
 
-template <class T> ArrayCompartido<T>::ArrayCompartido ( const ArrayCompartido& origen ):shmId(origen.shmId),_size(origen.size()) {
+template <class T> ArrayCompartido<T>::ArrayCompartido ( const ArrayCompartido& origen ):shmId(origen.shmId),_size(origen.size()),me(__FILE__) {
 	std::string me = this->me + ":ArrayCompartido(const ArrayCompartido& )";
 	void* tmpPtr = shmat ( origen.shmId,NULL,0 );
 
@@ -131,7 +131,7 @@ template <class T> ArrayCompartido<T>::ArrayCompartido ( const ArrayCompartido& 
 
 template <class T> ArrayCompartido<T>::~ArrayCompartido () {
 	std::string me = this->me + ":~ArrayCompartido";
-	int errorDt = shmdt ( static_cast<void**> (this->ptrDatos) );
+	int errorDt = shmdt ( (void**) (this->ptrDatos) );
 
 	if ( errorDt != -1 ) {
 		int procAdosados = this->cantidadProcesosAdosados ();
@@ -139,7 +139,7 @@ template <class T> ArrayCompartido<T>::~ArrayCompartido () {
 			shmctl ( this->shmId,IPC_RMID,NULL );
 		}
 	} else {
-		std::string mensaje = "Error en shmdt(): " << strerror(errno);
+		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 		std::cerr << mensaje << std::endl;
 		Logger::error(mensaje, me);
 	}
@@ -177,7 +177,7 @@ template <class T> int ArrayCompartido<T>::cantidadProcesosAdosados () const {
 }
 
 template <class T> unsigned int ArrayCompartido<T>::size() const {
-	return size;
+	return _size;
 }
 
 #endif /* ARRAYCOMPARTIDO_H_ */

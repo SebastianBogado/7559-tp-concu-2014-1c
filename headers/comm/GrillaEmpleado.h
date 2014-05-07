@@ -12,17 +12,16 @@
 #ifndef GRILLAEMPLEADO_H_
 #define GRILLAEMPLEADO_H_
 
-#include <list>
+#include <vector>
 #include "comm/ArrayCompartido.h"
-#include "Semaforo.h"
-#include "Pipe.h"
+#include "sync/Semaforo.h"
+#include "comm/Pipe.h"
 
 class GrillaEmpleado {
 private:
 	ArrayCompartido<unsigned int> _mem;
-	Semaforo _sems[];
-
-	Pipe _pipes[];
+	std::vector<Semaforo> _sems;
+	Pipe* _pipe;
 
 public:
 	GrillaEmpleado(unsigned int cantEmpleados);
@@ -38,7 +37,7 @@ public:
 	void asignarTrabajo(unsigned int idAuto, unsigned int idEmpleado);
 
 	// Metodo usado por el empleado para esperar su siguiente trabajo
-	unsigned int GrillaEmpleado::esperarTrabajo(unsigned int idEmpleado);
+	unsigned int esperarTrabajo(unsigned int idEmpleado);
 
 	// Metodo usado por un empleado que se libera de su trabajo para avisar al jefe
 	void avisarTrabajoTerminado(unsigned int idEmpleado);

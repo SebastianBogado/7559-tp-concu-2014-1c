@@ -5,7 +5,7 @@
  *      Author: ferno
  */
 
-#include "CajaRegistradora.h"
+#include "comm/CajaRegistradora.h"
 
 CajaRegistradora::CajaRegistradora() {
 	// La idea es que todos los que instancien de esa clase tengan la misma shmem y el mismo sem

@@ -5,25 +5,29 @@
  *      Author: ferno
  */
 
-#include "GrillaEmpleado.h"
+#include "comm/GrillaEmpleado.h"
 
 GrillaEmpleado::GrillaEmpleado(unsigned int cantEmpleados) {
 	std::string filename("/tmp/grillaEmpleados");
 	_mem.crear(filename,'g',cantEmpleados);
+	_pipe = new Pipe();
+
 	for(unsigned int i = 0; i < cantEmpleados; i++) {
 		// El semaforo esta disponible inicialmente para usarlo
 		std::string filename("/tmp/Empleado" + i);
-		_sems[i] = Semaforo(filename, 1);
+		Semaforo tmpSem(filename,1);
+		_sems[i] = tmpSem;
 		filename.clear();
-		_pipes[i] = Pipe();
 	}
 }
+
+GrillaEmpleado::~GrillaEmpleado() {}
 
 void GrillaEmpleado::inicializarGrilla(unsigned int cantEmpleados) {
 	for(unsigned int i = 0; i < cantEmpleados; i++) {
 		// Siempre se comienza con todos los empleados disponibles
 		_mem.escribir(0,cantEmpleados);
-		_pipes[i].setearModo(Pipe::ESCRITURA);
+		_pipe->setearModo(Pipe::ESCRITURA);
 	}
 }
 
@@ -45,13 +49,13 @@ void GrillaEmpleado::asignarTrabajo(unsigned int idAuto, unsigned int idEmpleado
 	_mem.escribir(1, idEmpleado);
 	_sems[idEmpleado].v();
 
-	_pipes[idEmpleado].escribir(&idAuto, sizeof(unsigned int));
+	_pipe->escribir(&idAuto, sizeof(unsigned int));
 }
 
 unsigned int GrillaEmpleado::esperarTrabajo(unsigned int idEmpleado) {
 	unsigned int idAuto;
-	_pipes[idEmpleado].setearModo(Pipe::LECTURA);
-	_pipes[idEmpleado].leer(&idAuto, sizeof(unsigned int));
+	_pipe->setearModo(Pipe::LECTURA);
+	_pipe->leer(&idAuto, sizeof(unsigned int));
 	return idAuto;
 }
 
