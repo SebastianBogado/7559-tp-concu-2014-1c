@@ -15,6 +15,7 @@
 #include <vector>
 #include "comm/ArrayCompartido.h"
 #include "sync/Semaforo.h"
+#include "logger/Logger.h"
 
 class Grilla {
 protected:

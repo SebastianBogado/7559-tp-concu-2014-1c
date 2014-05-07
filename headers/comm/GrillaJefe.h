@@ -13,6 +13,7 @@
 #include "Grilla.h"
 #include "FifoEscritura.h"
 #include "common.h"
+#include "logger/Logger.h"
 
 class GrillaJefe : public Grilla {
 private:

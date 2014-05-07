@@ -11,6 +11,7 @@
 #include "Grilla.h"
 #include "FifoLectura.h"
 #include "common.h"
+#include "logger/Logger.h"
 
 class GrillaEmpleado : public Grilla {
 private:

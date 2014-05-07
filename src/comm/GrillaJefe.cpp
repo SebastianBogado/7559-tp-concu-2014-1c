@@ -21,7 +21,7 @@ void GrillaJefe::inicializarGrilla(unsigned int cantEmpleados) {
 	for(unsigned int i = 0; i < cantEmpleados; i++) {
 		// Siempre se comienza con todos los empleados disponibles
 		_sems[i].p();
-		_mem.escribir(0,cantEmpleados);
+		_mem.escribir(0,i);
 		_sems[i].v();
 	}
 }

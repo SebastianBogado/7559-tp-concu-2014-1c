@@ -7,10 +7,7 @@
 
 #include "comm/Grilla.h"
 
-Grilla::Grilla(unsigned int cantEmpleados) {
-	std::string filename("/tmp/grillaEmpleados");
-	_mem.crear(filename,'g',cantEmpleados);
-
+Grilla::Grilla(unsigned int cantEmpleados) : _mem(shmemGrilla,'g',cantEmpleados) {
 	for(unsigned int i = 0; i < cantEmpleados; i++) {
 		// El semaforo esta disponible inicialmente para usarlo
 		std::string filename("/tmp/Empleado" + i);
@@ -20,4 +17,9 @@ Grilla::Grilla(unsigned int cantEmpleados) {
 	}
 }
 
-Grilla::~Grilla() {}
+Grilla::~Grilla() {
+	_mem.liberar();
+	for(unsigned int i = 0; i < _sems.size(); i++) {
+		_sems[i].eliminar();
+	}
+}

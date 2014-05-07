@@ -11,6 +11,7 @@
 #include "comm/MemoriaCompartida2.h"
 #include "sync/Semaforo.h"
 #include <vector>
+#include "logger/Logger.h"
 
 class CajaRegistradora {
 private:
