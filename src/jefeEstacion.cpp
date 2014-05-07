@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
 
 	// Setup del pipe de input
 	FifoLectura canal(fifoInputJefe);
-	const int buffer_size = 4;
+	const int buffer_size = sizeof(int);
 	char buffer[buffer_size];
 	canal.abrir();
 	for(;;) {
@@ -27,9 +27,10 @@ int main(int argc, char* argv[]) {
 				Logger::debug("Sali del input loop por error de lectura", me);
 				break;
 		}
-		std::string msg = buffer;
-		msg.resize(bytes);
-		Logger::debug(std::string("Leí del fifo: ") + msg, me);
+		int received_id = static_cast<int>(*buffer);
+		std::stringstream ss;
+		ss << "Leí del fifo: " << received_id;
+		Logger::debug(ss.str(), me);
 	}
 	
 	canal.cerrar();

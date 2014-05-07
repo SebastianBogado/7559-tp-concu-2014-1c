@@ -1,12 +1,12 @@
 // Pequeño programa para generar el input del programa principal
 // Establece el standard de input para el programa principal
-// Via fifo, se escriben 'autos'. Cada auto es un string que representa un id, seguido de un semi-colon (;)
+// Via fifo, se escriben 'autos'. Cada auto es un int
 // El programa principal lee el otro end del fifo
 // Este programa se encarga de generar dicho stream, poniendo los delays entre cada auto como sea necesario
 // Como parametro toma la cantidad de autos a generar
-// Un ejemplo de salida seria
+// Un ejemplo de salida (pasada a ascii) seria
 // ./input 4
-// 1;2;3;4;(EOF)
+// 1 2 3 4(EOF)
 
 #include <iostream>
 #include <cstdio>
@@ -51,9 +51,10 @@ int main(int argc, const char* argv[]) {
 		const int sleep_interval = (rand() % (max_delay - min_delay)) + min_delay;
 		sleep(sleep_interval);
 		// escritura al fifo
+		canal.escribir(static_cast<const void*>(&current), sizeof(current));
+		// debug write
 		std::stringstream msg;
-		msg << current << ";";
-		canal.escribir(static_cast<const void*>(msg.str().c_str()), msg.str().size());
+		msg << current;
 		Logger::debug(std::string("Write al pipe: ") + msg.str(), me);
 	}
 	
