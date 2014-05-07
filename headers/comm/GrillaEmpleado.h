@@ -1,40 +1,24 @@
 /*
  * GrillaEmpleado.h
  *
- *  Created on: May 5, 2014
+ *  Created on: May 7, 2014
  *      Author: ferno
- *
- *  Basicamente es un array compartido donde el jefe le asigna un auto (ID) a un empleado (elemento del array)
- *  y este ultimo lo lee y atiende al cliente. A su vez, el empleado avisa al jefe que esta disponible escribiendo un
- *  cero (0) en el elemento del array correspondiente
  */
 
 #ifndef GRILLAEMPLEADO_H_
 #define GRILLAEMPLEADO_H_
 
-#include <vector>
-#include "comm/ArrayCompartido.h"
-#include "sync/Semaforo.h"
-#include "comm/Pipe.h"
+#include "Grilla.h"
+#include "FifoLectura.h"
+#include "common.h"
 
-class GrillaEmpleado {
+class GrillaEmpleado : public Grilla {
 private:
-	ArrayCompartido<unsigned int> _mem;
-	std::vector<Semaforo> _sems;
-	Pipe* _pipe;
+	FifoLectura _fifo;
 
 public:
 	GrillaEmpleado(unsigned int cantEmpleados);
 	virtual ~GrillaEmpleado();
-
-	// Nota: Solo el JEFE o el creador principal debe inicializar la grilla
-	void inicializarGrilla(unsigned int cantEmpleados);
-
-	// Devuelve el ID de algun emplado libre. Si no hay ninguno libre, devuelve -1
-	unsigned int getEmpleadoLibre() const;
-
-	// Metodo usado por el jefe para marcar la LookUpTable como empleado asignado
-	void asignarTrabajo(unsigned int idAuto, unsigned int idEmpleado);
 
 	// Metodo usado por el empleado para esperar su siguiente trabajo
 	unsigned int esperarTrabajo(unsigned int idEmpleado);
@@ -42,5 +26,8 @@ public:
 	// Metodo usado por un empleado que se libera de su trabajo para avisar al jefe
 	void avisarTrabajoTerminado(unsigned int idEmpleado);
 };
+
+
+
 
 #endif /* GRILLAEMPLEADO_H_ */

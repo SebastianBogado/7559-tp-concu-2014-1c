@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
 
 	// Init Logger
 	const std::string me = __FILE__ ":main";
-	Logger::initialize(logFile,Logger::LOG_DEBUG);
+	Logger::initialize(logFile.c_str(),Logger::LOG_DEBUG);
 
 	Logger::debug("Init jefeEstacion", me);
 

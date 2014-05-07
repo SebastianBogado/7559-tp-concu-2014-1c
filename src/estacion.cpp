@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 	const std::string me = __FILE__ ":main";
 
 	// Init Logger
-	Logger::initialize(logFile,Logger::LOG_DEBUG);
+	Logger::initialize(logFile.c_str(),Logger::LOG_DEBUG);
 
 	// Parse command line (--cant-surtidores --cant-empleados ¿--log-filename?)
 	Logger::log("Se ha parseado la linea de comandos", Logger::LOG_DEBUG, me);
