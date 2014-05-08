@@ -3,7 +3,7 @@
 /*
 *
 *
-*	Constantes y demases globales al sistema
+*	Constantes y otras cosas globales al sistema
 */
 
 #ifndef COMMON_H_
@@ -28,5 +28,16 @@ const std::string shmemSurtidores = "/tmp/Surtidores";
 
 // Archivo para el semaforo de los surtidores disponibles
 const std::string semSurtidoresDisponibles = "/tmp/SurtidoresDisponibles";
+
+// Retorna convertido en string el elemento
+template<typename T> std::string toString(const T& elem) {
+    std::stringstream ss;
+    std::string res;
+
+	ss << elem;
+	ss >> res;
+
+	return res;
+}
 
 #endif
