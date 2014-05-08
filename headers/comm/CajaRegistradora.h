@@ -21,7 +21,7 @@ public:
 	CajaRegistradora();
 	virtual ~CajaRegistradora();
 
-	double cosultarMonto() const;
+	double consultarMonto() const;
 	void depositar(const double monto);
 };
 

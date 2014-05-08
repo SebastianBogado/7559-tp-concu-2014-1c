@@ -19,7 +19,7 @@ CajaRegistradora::~CajaRegistradora() {
 	delete _sem;
 }
 
-double CajaRegistradora::cosultarMonto() const {
+double CajaRegistradora::consultarMonto() const {
 	double monto;
 	_sem->p();
 	monto = _caja.leer();
