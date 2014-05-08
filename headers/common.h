@@ -10,6 +10,7 @@
 #define COMMON_H_
 
 #include <string>
+#include <sstream>
 
 // Archivo de log
 const std::string logFile = "log.txt";
