@@ -11,17 +11,27 @@
 #include <cstdlib>
 
 #include "logger/Logger.h"
+#include "parser/Parser.h"
 #include "common.h"
 
 int main(int argc, char* argv[]) {
-
 	const std::string me = __FILE__ ":main";
+	
+	// Parse command line
+	Parser parser;
+	if(!parser.parse(argc, argv)) {
+		parser.printUsage();
+		exit(2);
+	}
 
 	// Init Logger
-	Logger::initialize(logFile.c_str(),Logger::LOG_DEBUG);
-
-	// Parse command line (--cant-surtidores --cant-empleados ¿--log-filename?)
-	Logger::log("Se ha parseado la linea de comandos", Logger::LOG_DEBUG, me);
+	if(parser.debugMode()) {
+		Logger::initialize(logFile.c_str(), Logger::LOG_DEBUG);
+	}else{
+		Logger::initialize(logFile.c_str(), Logger::LOG_WARNING);
+	}
+	
+	Logger::debug("Se ha parseado la linea de comandos", me);
 
 	// Ret val para los fork
 	pid_t pid;
