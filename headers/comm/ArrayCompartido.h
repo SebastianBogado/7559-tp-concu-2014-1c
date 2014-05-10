@@ -46,6 +46,7 @@ template <class T> ArrayCompartido<T>::ArrayCompartido():shmId(0),ptrDatos(NULL)
 
 template <class T> void ArrayCompartido<T>::crear(const std::string& archivo,const char letra,const unsigned int tam) {
 	std::string me = this->me + ":crear";
+	std::ofstream arch(archivo.c_str());
 	key_t clave = ftok ( archivo.c_str(),letra );
 
 	if ( clave > 0 ) {
