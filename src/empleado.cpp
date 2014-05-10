@@ -16,14 +16,28 @@
 #include "comm/Surtidores.h"
 #include "comm/CajaRegistradora.h"
 #include "comm/GrillaEmpleado.h"
+#include "comm/ArgHelper.h"
 
 int main(int argc, char* argv[]) {
+  
+	// Parsear los argumentos que nos manda el padre
+	bool debugMode;
+	int cantEmpleados, cantAutos, idEmpleado;
+	
+	if(!ArgHelper::decode(argc, argv, &debugMode, &cantEmpleados, &cantAutos, &idEmpleado)) {
+		std::cerr << "Error - invalid parameters passed to process " << argv[0] << std::endl;
+		exit(1);
+	}
+
+	std::cout << "EMPLEADO " << idEmpleado << "," << debugMode << "," << cantEmpleados << "," << cantAutos << std::endl;
+
+	exit(0);
+  
 	// Init Logger
 	Logger::initialize(logFile.c_str(), Logger::LOG_DEBUG);
 
 	srand(time(NULL));
 
-	unsigned int idEmpleado, cantEmpleados;
 	std::string idEmpleadoStr,
 		me = __FILE__;
 

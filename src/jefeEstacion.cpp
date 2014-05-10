@@ -6,27 +6,28 @@
 #include "logger/Logger.h"
 #include "comm/FifoLectura.h"
 #include "parser/Parser.h"
+#include "comm/ArgHelper.h"
 
 int main(int argc, char* argv[]) {
 	const std::string me = __FILE__ ":main";
 	
 	// Para debuggear - borrar despues
 	/*std::cout << "Argc: " << argc << std::endl;
-	argc--;
-	while(argc >= 0) {
-		std::cout << "Argv[" << argc << "]: " << argv[argc] << std::endl;
-		argc--;
+	for(int c = 0;c < argc;c++) {
+		std::cout << "Argv[" << c << "]: " << argv[c] << std::endl;
 	}*/
 
-	// Parsear linea de comandos
-	Parser parser;
-	if(!parser.parse(argc, argv)) {
-		std::cerr << me << "-- Error parseando argv\n";
-		exit(2);
+	// Parsear los argumentos que nos manda el padre
+	bool debugMode;
+	int cantEmpleados, cantAutos, myId;
+	
+	if(!ArgHelper::decode(argc, argv, &debugMode, &cantEmpleados, &cantAutos, &myId)) {
+		std::cerr << "Error - invalid parameters passed to process " << argv[0] << std::endl;
+		exit(1);
 	}
 
 	// Init Logger
-	if(parser.debugMode()) {
+	if(debugMode) {
 		Logger::initialize(logFile.c_str(), Logger::LOG_DEBUG);
 	}else{
 		Logger::initialize(logFile.c_str(), Logger::LOG_WARNING);
