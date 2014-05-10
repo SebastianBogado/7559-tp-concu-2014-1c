@@ -8,6 +8,7 @@
 #include <string.h>
 #include <iostream>
 #include <errno.h>
+#include "logger/Logger.h"
 
 template <class T> class MemoriaCompartida2 {
 
@@ -34,7 +35,9 @@ template <class T> MemoriaCompartida2<T>::MemoriaCompartida2 ():shmId(0),ptrDato
 }
 
 template <class T> void MemoriaCompartida2<T>::crear ( const std::string& archivo,const char letra ) {
+	Logger::debug("Iniciando creación de la memoria compartida");
 	key_t clave = ftok ( archivo.c_str(),letra );
+	Logger::debug("Se obtiene la clave para la memoria compartida");
 
 	if ( clave > 0 ) {
 		this->shmId = shmget ( clave,sizeof(T),0644|IPC_CREAT );

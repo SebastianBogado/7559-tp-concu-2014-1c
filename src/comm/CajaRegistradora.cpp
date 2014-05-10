@@ -9,9 +9,33 @@
 
 CajaRegistradora::CajaRegistradora() {
 	// La idea es que todos los que instancien de esa clase tengan la misma shmem y el mismo sem
-	std::string file("/tmp/shmemCaja");
-	_caja.crear(file, 'c');
+	Logger::debug("A punto de crear la memoria compartida para la caja registradora");
+
+	std::string file("tmp/shmemCaja");
+	std::ofstream arch(file.c_str());
+	if (arch.fail() || arch.bad()) {
+		Logger::error("Error creando archivo para la caja registradora");
+		exit(1);
+	}
+
+	Logger::debug("Creado archivo que representara la memoria compartida");
+	try {
+		_caja.crear(file,'c');
+	} catch(std::string& msg) {
+		Logger::error(msg);
+		arch.close();
+		exit(2);
+	}
+
+	Logger::debug("Memoria compartida creada. Se creará el semáforo para sync de usuarios");
+	std::ofstream archSem("/tmp/semCaja");
+	if (archSem.fail() || archSem.bad()) {
+		Logger::error("Error creando archivo para la caja registradora");
+		exit(3);
+	}
 	_sem = new Semaforo(file, 1);
+	Logger::debug("Semaforo creado");
+	Logger::notice("Se ha inicializado la caja registradora correctamente");
 }
 
 CajaRegistradora::~CajaRegistradora() {

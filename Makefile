@@ -19,13 +19,15 @@ JEFE_SOURCES=src/jefeEstacion.cpp
 JEFE_OBJ=$(JEFE_SOURCES:.cpp=.o)
 JEFE_BIN=$(BINF)/jefeEstacion
 
-
 EMPLEADO_SOURCES=src/empleado.cpp
 EMPLEADO_OBJ=$(EMPLEADO_SOURCES:.cpp=.o)
 EMPLEADO_BIN=$(BINF)/empleado
 
+ADMINISTRADOR_SOURCES=src/administrador.cpp
+ADMINISTRADOR_OBJ=$(ADMINISTRADOR_SOURCES:.cpp=.o)
+ADMINISTRADOR_BIN=$(BINF)/administrador
 
-all: estacion jefeEstacion input empleado
+all: estacion jefeEstacion input empleado administrador
 
 estacion: $(ESTACION_OBJ) $(SHARED_OBJ)
 	$(CC) $(SHARED_OBJ) $(ESTACION_OBJ) -o $(ESTACION_BIN) -I$(HEADER_DIR)
@@ -38,6 +40,9 @@ input: $(INPUT_OBJ) $(SHARED_OBJ)
 
 empleado: $(EMPLEADO_OBJ) $(SHARED_OBJ)
 	$(CC) $(SHARED_OBJ) $(EMPLEADO_OBJ) -o $(EMPLEADO_BIN) -I$(HEADER_DIR)
+	
+administrador: $(ADMINISTRADOR_OBJ) $(SHARED_OBJ)
+	$(CC) $(SHARED_OBJ) $(ADMINISTRADOR_OBJ) -o $(ADMINISTRADOR_BIN) -I$(HEADER_DIR)
 
 .cpp.o:
 	$(CC) $(CFLAGS) -I$(HEADER_DIR) -c $< -o $@
