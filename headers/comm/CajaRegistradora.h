@@ -12,7 +12,9 @@
 #include "sync/Semaforo.h"
 #include <vector>
 #include <cstdlib>
+#include <cstdio>
 #include "logger/Logger.h"
+#include "common.h"
 
 class CajaRegistradora {
 private:
@@ -22,6 +24,7 @@ public:
 	CajaRegistradora();
 	virtual ~CajaRegistradora();
 
+	static void destruirCaja();
 	double consultarMonto() const;
 	void depositar(const double monto);
 };

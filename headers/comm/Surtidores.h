@@ -30,6 +30,8 @@ public:
 	Surtidores(unsigned int cantSurtidores);
 	virtual ~Surtidores();
 
+	static void destruirSurtidores();
+
 	// Este metodo consigue un surtidor de la lista. Devuelve el numero de surtidor que le toco al empleado
 	unsigned int conseguirSurtidorLibre(unsigned int idEmpleado);
 

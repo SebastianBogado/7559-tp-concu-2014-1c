@@ -13,10 +13,12 @@ Surtidores::Surtidores(unsigned int cantSurtidores) :
 
 	for(unsigned int i = 0; i < cantSurtidores; i++) {
 		// El semaforo esta disponible inicialmente para usarlo
-		std::string filename("/tmp/Empleado" + i);
+		std::string filename("/tmp/Surtidor" + i);
+		std::ofstream arch(filename.c_str());
 		Semaforo tmpSem(filename,1);
 		_sems[i] = tmpSem;
 		filename.clear();
+		arch.close();
 	}
 
 	inicializarSurtidores();
@@ -30,6 +32,15 @@ void Surtidores::inicializarSurtidores() {
 		_surtidores.escribir(0,i);
 		_sems[i].v();
 	}
+}
+
+void Surtidores::destruirSurtidores() {
+	remove(shmemSurtidores.c_str());
+	remove(semSurtidoresDisponibles.c_str());
+	/*for(unsigned int i = 0; i < _sems.size(); i++) {
+		// El semaforo esta disponible inicialmente para usarlo
+		remove("/tmp/Surtidor" + i);
+	}*/
 }
 
 Surtidores::~Surtidores() {

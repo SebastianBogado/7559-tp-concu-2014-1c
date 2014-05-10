@@ -44,7 +44,9 @@ int main(int argc, char* argv[]) {
 		logMsg.str("");logMsg.clear();
 		logMsg << "En la caja hay actualmente " << monto << " pesos";
 		Logger::notice(logMsg.str(), procName);
+		break;
 	}
 
+	CajaRegistradora::destruirCaja();
 	return 0;
 }
