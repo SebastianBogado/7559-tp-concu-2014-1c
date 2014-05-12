@@ -33,7 +33,6 @@ Surtidores::Surtidores(unsigned int cantSurtidores) {
 		std::ofstream arch(filename.c_str());
 		Semaforo tmpSem(filename,1);
 		_sems.push_back(tmpSem);
-		filename.clear();
 		arch.close();
 	}
 	Logger::debug("Creados los semáforos individuales para cada surtidor...");
@@ -76,8 +75,10 @@ unsigned int Surtidores::conseguirSurtidorLibre(unsigned int idEmpleado) {
 	for(unsigned int i = 0; (i < _sems.size()) && (idSurtidorAsignado == -1); i++) {
 		_sems[i].p();
 		unsigned int ocupado = _surtidores.leer(i);
+		Logger::debug("Se ha leido estado " + toString(ocupado) + " en surtidor " + toString(i));
 		if(!ocupado) {
-			_surtidores.escribir(idEmpleado,i);
+			_surtidores.escribir(1,i);
+			Logger::debug("Se ocupa surtidor " + toString(i) + " ahora con estado " + toString(_surtidores.leer(i)));
 			idSurtidorAsignado = i;
 		}
 		_sems[i].v();
@@ -86,8 +87,6 @@ unsigned int Surtidores::conseguirSurtidorLibre(unsigned int idEmpleado) {
 }
 
 void Surtidores::liberarSurtidor(unsigned int idSurtidor) {
-	_surtidores.liberar();
-
 	_sems[idSurtidor].p();
 	_surtidores.escribir(0,idSurtidor);
 	_sems[idSurtidor].v();

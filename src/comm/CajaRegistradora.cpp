@@ -62,6 +62,7 @@ double CajaRegistradora::consultarMonto() const {
 
 void CajaRegistradora::depositar(const double monto) {
 	_sem->p();
-	_caja.escribir(monto);
+	double montoActual = _caja.leer();
+	_caja.escribir(montoActual + monto);
 	_sem->v();
 }
