@@ -7,18 +7,19 @@
 
 #include "comm/CajaRegistradora.h"
 
-CajaRegistradora::CajaRegistradora() {
+CajaRegistradora::CajaRegistradora() : me(__FILE__) {
+	std::string me = this->me + ":CajaRegistradora";
 	// La idea es que todos los que instancien de esa clase tengan la misma shmem y el mismo sem
-	Logger::debug("A punto de crear la memoria compartida para la caja registradora");
+	Logger::debug("A punto de crear la memoria compartida para la caja registradora", me);
 
 	std::string file("tmp/shmemCaja");
 	std::ofstream arch(file.c_str());
 	if (arch.fail() || arch.bad()) {
-		Logger::error("Error creando archivo para la caja registradora");
+		Logger::error("Error creando archivo para la caja registradora", me);
 		exit(1);
 	}
 
-	Logger::debug("Creado archivo que representara la memoria compartida");
+	Logger::debug("Creado archivo que representara la memoria compartida", me);
 	try {
 		_caja.crear(file,'c');
 	} catch(std::string& msg) {
@@ -27,15 +28,15 @@ CajaRegistradora::CajaRegistradora() {
 		exit(2);
 	}
 
-	Logger::debug("Memoria compartida creada. Se creará el semáforo para sync de usuarios");
+	Logger::debug("Memoria compartida creada. Se creará el semáforo para sync de usuarios", me);
 	std::ofstream archSem("/tmp/semCaja");
 	if (archSem.fail() || archSem.bad()) {
-		Logger::error("Error creando archivo para la caja registradora");
+		Logger::error("Error creando archivo para la caja registradora", me);
 		exit(3);
 	}
 	_sem = new Semaforo(file, 1);
-	Logger::debug("Semaforo creado");
-	Logger::notice("Se ha inicializado la caja registradora correctamente");
+	Logger::debug("Semaforo creado", me);
+	Logger::notice("Se ha inicializado la caja registradora correctamente", me);
 }
 
 CajaRegistradora::~CajaRegistradora() {

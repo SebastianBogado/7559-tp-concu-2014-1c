@@ -12,12 +12,14 @@
 #include "sync/Semaforo.h"
 #include <vector>
 #include <cstdlib>
+#include <string>
 #include "logger/Logger.h"
 
 class CajaRegistradora {
 private:
 	MemoriaCompartida<double> _caja;
 	Semaforo* _sem;
+	std::string me;
 public:
 	CajaRegistradora();
 	virtual ~CajaRegistradora();
