@@ -16,10 +16,10 @@
 const std::string logFile = "log.txt";
 
 // Archivo para la memoria compartida de la caja
-const std::string shmemCaja = "tmp/shmemCaja";
+const std::string shmemCaja = "/tmp/shmemCaja";
 
 // Archivo para el semaforo de la shmem de la caja
-const std::string semCaja = "tmp/semCaja";
+const std::string semCaja = "/tmp/semCaja";
 
 // Archivo para el pipe fifo entre input<->jefeEstacion
 const std::string fifoInputJefe = "/tmp/fifoInputJefe";
