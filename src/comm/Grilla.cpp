@@ -36,9 +36,9 @@ Grilla::~Grilla() {
 	}
 }
 
-void Grilla::destruir() {
+void Grilla::destruir(unsigned int cantEmpleados) {
 	remove(shmemGrilla.c_str());
-	for(unsigned int i = 0; i < _sems.size(); i++) {
+	for(unsigned int i = 0; i < cantEmpleados; i++) {
 		std::string filename("/tmp/Empleado" + toString(i));
 		remove(filename.c_str());
 	}

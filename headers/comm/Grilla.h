@@ -28,7 +28,7 @@ public:
 	Grilla(unsigned int cantEmpleados);
 	virtual ~Grilla();
 
-	void destruir();
+	static void destruir(unsigned int cantEmpleados);
 };
 
 #endif /* GRILLA_H_ */

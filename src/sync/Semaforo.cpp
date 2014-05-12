@@ -27,10 +27,17 @@ int Semaforo :: inicializar () const {
 		ushort* array;
 	};
 
+	semnum flag;
 	semnum init;
-	init.val = this->valorInicial;
-	int resultado = semctl ( this->id,0,SETVAL,init );
-	return resultado;
+
+	semctl(this->id,0,IPC_STAT,flag);
+	if (flag.buf->sem_otime == 0) {
+		// No ha sido inicializado!
+		init.val = this->valorInicial;
+		int resultado = semctl ( this->id,0,SETVAL,init );
+		return resultado;
+	}
+	return 0;
 }
 
 int Semaforo :: p () const {
