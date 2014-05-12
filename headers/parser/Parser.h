@@ -2,8 +2,8 @@
 
 class Parser {
 
-	static const int default_surtidores = 5;
-	static const int default_empleados = 10;
+	static const int default_surtidores = 2;
+	static const int default_empleados = 3;
 	static const bool default_debug = true;
 
 	bool _debug;

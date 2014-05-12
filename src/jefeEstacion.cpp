@@ -7,6 +7,7 @@
 #include "comm/FifoLectura.h"
 #include "parser/Parser.h"
 #include "comm/ArgHelper.h"
+#include "comm/GrillaJefe.h"
 
 int main(int argc, char* argv[]) {
 	const std::string me = __FILE__ ":main";
@@ -35,6 +36,8 @@ int main(int argc, char* argv[]) {
 	
 	Logger::debug("Init jefeEstacion", me);
 
+	GrillaJefe grillaJefe(cantEmpleados);
+
 	// Setup del pipe de input
 	FifoLectura canal(fifoInputJefe);
 	const int buffer_size = sizeof(int);
@@ -50,10 +53,19 @@ int main(int argc, char* argv[]) {
 				Logger::debug("Sali del input loop por error de lectura", me);
 				leyendo = false;
 		}else{
-			int received_id = static_cast<int>(*buffer);
+			int received_auto_id = static_cast<int>(*buffer);
 			std::stringstream ss;
-			ss << "Leí del fifo: " << received_id;
+			ss << "Leí del fifo: " << received_auto_id;
 			Logger::debug(ss.str(), me);
+			int for_empleado_id = grillaJefe.getEmpleadoLibre();
+			if(for_empleado_id == -1) {
+				Logger::debug("No hay empleados disponibles para este auto", me);
+			}else{
+				grillaJefe.asignarTrabajo(received_auto_id, for_empleado_id);
+				ss.str("");
+				ss << "Se asigno el auto " << received_auto_id << " al empleado " << for_empleado_id;
+				Logger::debug(ss.str(), me);
+			}
 		}
 	}
 	
