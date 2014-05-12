@@ -25,6 +25,8 @@ int main(int argc, char* argv[]) {
 	
 	// Parse command line
 	Parser parser;
+	std::string dir(argv[0]);
+	dir.replace(dir.find("estacion"), dir.length() - dir.find("estacion"), "");
 	if(!parser.parse(argc, argv)) {
 		parser.printUsage();
 		exit(2);
@@ -48,7 +50,7 @@ int main(int argc, char* argv[]) {
 		// que no se utiliza en este caso
 		ArgHelper argh;
 		argh.encode("jefeEstacion", parser.debugMode(), parser.cantEmpleados(), parser.cantSurtidores(), 0);
-		execv("./jefeEstacion", argh.getArgv());
+		execv((dir + "jefeEstacion").c_str(), argh.getArgv());
 		Logger::log("Error creando el hijo JefeEstacion", Logger::LOG_CRITICAL, me);
 		Logger::destroy();
 		exit(1);
@@ -65,7 +67,7 @@ int main(int argc, char* argv[]) {
 			// Creamos el nuevo proceso pasando el flag de debug, la cant de empleados y surtidores y el id
 			ArgHelper argh;
 			argh.encode("empleado", parser.debugMode(), parser.cantEmpleados(), parser.cantSurtidores(), i);
-			execv("./empleado", argh.getArgv());
+			execv((dir + "empleado").c_str() , argh.getArgv());
 			ss.str("");
 			ss << "Error creando proceso empleado #" << i;
 			Logger::log(ss.str(), Logger::LOG_CRITICAL, me);
