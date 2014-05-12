@@ -30,7 +30,11 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Init Logger
-	Logger::initialize(logFile.c_str(), debugMode ? Logger::LOG_DEBUG : Logger::LOG_WARNING);
+	if(debugMode) {
+		Logger::initialize(logFile.c_str(), Logger::LOG_DEBUG);
+	}else{
+		Logger::initialize(logFile.c_str(), Logger::LOG_WARNING);
+	}
 
 	srand(idEmpleado);
 
