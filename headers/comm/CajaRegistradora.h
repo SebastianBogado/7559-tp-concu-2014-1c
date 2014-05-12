@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <string>
+#include <cerrno>
 #include "logger/Logger.h"
 #include "common.h"
 

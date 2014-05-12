@@ -14,7 +14,7 @@ CajaRegistradora::CajaRegistradora() : me(__FILE__) {
 
 	std::ofstream arch(shmemCaja.c_str());
 	if (arch.fail() || arch.bad()) {
-		Logger::error("Error creando archivo para la caja registradora", me);
+		Logger::error("Error creando archivo para la caja registradora: " + std::string(strerror(errno)), me);
 		exit(1);
 	}
 
@@ -22,7 +22,7 @@ CajaRegistradora::CajaRegistradora() : me(__FILE__) {
 	try {
 		_caja.crear(shmemCaja,'c');
 	} catch(std::string& msg) {
-		Logger::error(msg);
+		Logger::error(msg, me);
 		arch.close();
 		exit(2);
 	}
@@ -30,7 +30,7 @@ CajaRegistradora::CajaRegistradora() : me(__FILE__) {
 	Logger::debug("Memoria compartida creada. Se creará el semáforo para sync de usuarios", me);
 	std::ofstream archSem(semCaja.c_str());
 	if (archSem.fail() || archSem.bad()) {
-		Logger::error("Error creando archivo para la caja registradora", me);
+		Logger::error("Error creando archivo para la caja registradora" + std::string(strerror(errno)), me);
 		exit(3);
 	}
 
