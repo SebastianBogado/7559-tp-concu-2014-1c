@@ -29,7 +29,7 @@ Surtidores::Surtidores(unsigned int cantSurtidores) {
 
 	for(unsigned int i = 0; i < cantSurtidores; i++) {
 		// El semaforo esta disponible inicialmente para usarlo
-		std::string filename("/tmp/Surtidor" + i);
+		std::string filename("/tmp/Surtidor" + toString(i));
 		std::ofstream arch(filename.c_str());
 		Semaforo tmpSem(filename,1);
 		_sems.push_back(tmpSem);
@@ -56,7 +56,8 @@ void Surtidores::destruirSurtidores() {
 	remove(shmemSurtidores.c_str());
 	remove(semSurtidoresDisponibles.c_str());
 	for(unsigned int i = 0; i < _sems.size(); i++) {
-		remove("/tmp/Surtidor" + i);
+		std::string filename("/tmp/Surtidor" + toString(i));
+		remove(filename.c_str());
 	}
 }
 

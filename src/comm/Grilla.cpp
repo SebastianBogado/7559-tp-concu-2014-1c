@@ -20,7 +20,7 @@ Grilla::Grilla(unsigned int cantEmpleados) {
 
 	for(unsigned int i = 0; i < cantEmpleados; i++) {
 		// El semaforo esta disponible inicialmente para usarlo
-		std::string filename("/tmp/Empleado" + i);
+		std::string filename("/tmp/Empleado" + toString(i));
 		std::ofstream archSem(filename.c_str());
 		Semaforo tmpSem(filename,1);
 		_sems.push_back(tmpSem);
@@ -39,6 +39,7 @@ Grilla::~Grilla() {
 void Grilla::destruir() {
 	remove(shmemGrilla.c_str());
 	for(unsigned int i = 0; i < _sems.size(); i++) {
-		remove("/tmp/Empleado" + i);
+		std::string filename("/tmp/Empleado" + toString(i));
+		remove(filename.c_str());
 	}
 }
