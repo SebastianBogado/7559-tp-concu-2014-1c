@@ -88,9 +88,9 @@ void Surtidores::inicializarSurtidores(unsigned int cantSurtidores) {
 		Logger::error(_msg, me);
 		throw _msg;
 	}
-	Semaforo tmpSem;
+
 	try {
-		tmpSem.crear(semSurtidoresDisponibles,cantSurtidores);
+		_surtidoresDisponibles.crear(semSurtidoresDisponibles,cantSurtidores);
 	} catch(std::string& msg) {
 		std::string _msg("Error en la init del semaforo para todos los surtidores");
 		Logger::error(_msg, me);
@@ -125,6 +125,7 @@ void Surtidores::inicializarSurtidores(unsigned int cantSurtidores) {
 
 			throw _msg;
 		}
+		_sems.push_back(tmpSem);
 		arch.close();
 		Logger::debug(std::string("Se ha inicializado el semaforo para el surtidor ") + toString(i), me);
 	}
@@ -151,8 +152,7 @@ void Surtidores::destruirSurtidores(unsigned int cantSurtidores) {
 		std::string filename("/tmp/Surtidor" + toString(i));
 		remove(filename.c_str());
 	}
-
-	for (unsigned int i = 0; i < _sems.size(); i++)
+	for (unsigned int i = 0; i < cantSurtidores; i++)
 		_sems[i].eliminar();
 
 	_surtidoresDisponibles.eliminar();

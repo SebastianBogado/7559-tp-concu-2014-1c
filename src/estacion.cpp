@@ -155,5 +155,4 @@ void inicializarSharedObjects(CajaRegistradora& caja, Grilla& grilla, GrillaJefe
 	grilla.inicializarGrilla(cantEmpleados);
 	grillaJefe.inicializarGrillaJefe();
 	surtidores.inicializarSurtidores(cantSurtidores);
-	surtidores.crearSurtidores(cantSurtidores);
 }
