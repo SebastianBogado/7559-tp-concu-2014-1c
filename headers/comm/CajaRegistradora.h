@@ -8,7 +8,7 @@
 #ifndef CAJAREGISTRADORA_H_
 #define CAJAREGISTRADORA_H_
 
-#include "comm/MemoriaCompartida2.h"
+#include "comm/MemoriaCompartida.h"
 #include "sync/Semaforo.h"
 #include <vector>
 #include <cstdlib>
@@ -16,7 +16,7 @@
 
 class CajaRegistradora {
 private:
-	MemoriaCompartida2<double> _caja;
+	MemoriaCompartida<double> _caja;
 	Semaforo* _sem;
 public:
 	CajaRegistradora();
