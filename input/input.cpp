@@ -27,16 +27,26 @@ const int cant_autos_default = 10;
 
 int main(int argc, const char* argv[]) {
 	
+	if(argc == 2 && std::string(argv[1]) == "-h") {
+		std::cout << "input <cant_autos> <min_delay> <max_delay>\n";
+		return 1;
+	}
+	
+	// Cargamos los parametros de argv o default
+	const int cant_autos = (argc >= 2 ? std::atoi(argv[1]) : cant_autos_default);
+	const int min_delay = (argc >= 3 ? std::atoi(argv[2]) : min_delay_default);
+	const int max_delay = (argc >= 4 ? std::atoi(argv[3]) : max_delay_default);
+	// Breve chequeo de params
+	if(cant_autos <= 0 || min_delay <= 0 || max_delay <= 0 || min_delay >= max_delay) {
+		std::cerr << "Invalid arguments!\n";
+		return 2;
+	}
+
 	// Init Logger
 	const std::string me = __FILE__ ":main";
 	Logger::initialize(logFile.c_str(),Logger::LOG_DEBUG);
 
 	Logger::debug("Init input", me);
-
-	// Cargamos los parametros de argv o default
-	const int cant_autos = (argc >= 2 ? std::atoi(argv[1]) : cant_autos_default);
-	const int min_delay = (argc >= 3 ? std::atoi(argv[2]) : min_delay_default);
-	const int max_delay = (argc >= 4 ? std::atoi(argv[3]) : max_delay_default);
 
 	// rand seed
 	std::srand(std::time(NULL));

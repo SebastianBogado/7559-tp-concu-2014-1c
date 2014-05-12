@@ -23,6 +23,7 @@ class Grilla {
 protected:
 	ArrayCompartido<int> _mem;
 	std::vector<Semaforo> _sems;
+	std::string me;
 
 public:
 	Grilla(unsigned int cantEmpleados);

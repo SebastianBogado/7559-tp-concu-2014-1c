@@ -7,16 +7,18 @@
 
 #include "comm/Grilla.h"
 
-Grilla::Grilla(unsigned int cantEmpleados) {
+Grilla::Grilla(unsigned int cantEmpleados) : me(__FILE__) {
+
+	std::string me = this->me + ":Grilla";
 
 	std::ofstream arch(shmemGrilla.c_str());
 	if (arch.fail() || arch.bad()) {
-		Logger::error("Error creando archivo para la grilla de empleados");
+		Logger::error("Error creando archivo para la grilla de empleados", me);
 		exit(1);
 	}
 	_mem.crear(shmemGrilla,'g',cantEmpleados);
 	arch.close();
-	Logger::debug("Memoria compartida para la grilla de empleados creada");
+	Logger::debug("Memoria compartida para la grilla de empleados creada", me);
 
 	for(unsigned int i = 0; i < cantEmpleados; i++) {
 		// El semaforo esta disponible inicialmente para usarlo

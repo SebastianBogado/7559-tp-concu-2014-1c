@@ -8,6 +8,7 @@
 #include "comm/GrillaJefe.h"
 
 GrillaJefe::GrillaJefe(unsigned int cantEmpleados) : Grilla(cantEmpleados), _cantEmpleados(cantEmpleados) {
+	me = __FILE__;
 	for (unsigned int i = 0; i < cantEmpleados; i++) {
 		std::string filename(fifoJefeEmpleados + toString(i));
 		FifoEscritura tmpFifo(filename);
@@ -34,10 +35,11 @@ void GrillaJefe::inicializarGrilla(unsigned int cantEmpleados) {
 }
 
 unsigned int GrillaJefe::getEmpleadoLibre() const {
+	std::string me = this->me + ":getEmpleadoLibre";
 	for(unsigned int i = 0; i < _cantEmpleados; i++) {
 		_sems[i].p();
 		unsigned int ocupado = _mem.leer(i);
-		Logger::debug("Se ha leido el estado " + toString(ocupado) + " del empleado " + toString(i));
+		Logger::debug("Se ha leido el estado " + toString(ocupado) + " del empleado " + toString(i), me);
 		_sems[i].v();
 		// 0 == Libre, 1 == Ocupado
 		if (!ocupado)	return i;
