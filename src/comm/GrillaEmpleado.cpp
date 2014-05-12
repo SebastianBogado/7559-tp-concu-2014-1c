@@ -8,6 +8,7 @@
 #include "comm/GrillaEmpleado.h"
 
 GrillaEmpleado::GrillaEmpleado(unsigned int cantEmpleados, unsigned int idEmpleado) : Grilla(cantEmpleados) {
+	me = __FILE__;
 	std::string filename(fifoJefeEmpleados + toString(idEmpleado));
 	// TODO: Error correction! Mover a un metodo "crear"
 	_fifo = new FifoLectura(filename);

@@ -22,6 +22,7 @@ class Surtidores {
 private:
 	ArrayCompartido<unsigned int> _surtidores;
 	std::vector<Semaforo> _sems;
+	std::string me;
 
 	Semaforo _surtidoresDisponibles;
 
