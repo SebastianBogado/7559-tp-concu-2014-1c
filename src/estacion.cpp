@@ -23,6 +23,7 @@
 #include "comm/CajaRegistradora.h"
 #include "comm/GrillaJefe.h"
 #include "comm/Surtidores.h"
+#include "comm/Fifo.h"
 
 void inicializarSharedObjects(CajaRegistradora& caja, Grilla& grilla, GrillaJefe& grillaJefe, Surtidores& surtidores, unsigned int cantEmpleados, unsigned int cantSurtidores);
 
@@ -47,6 +48,15 @@ int main(int argc, char* argv[]) {
 	
 	Logger::debug("Se ha parseado la linea de comandos", me);
 
+	// TODO: Ordenar la creacion de este fifo. Encapsularlo porque queda feito
+	FifoEscritura fifoAutosJefe(fifoInputJefe);
+	try {
+		fifoAutosJefe.crear();
+	} catch(std::string& msg) {
+		std::string _msg("Error en al creacion del fifo entre input y jefe");
+		Logger::error(_msg, me);
+		exit(1);
+	}
 	CajaRegistradora caja;
 	Grilla grilla;
 	GrillaJefe grillaJefe(parser.cantEmpleados());
