@@ -69,6 +69,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	
+	grillaJefe.avisarTerminarTrabajo(cantEmpleados);
 	canal.cerrar();
 	
 }

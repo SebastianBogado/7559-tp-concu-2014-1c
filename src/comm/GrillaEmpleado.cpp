@@ -20,7 +20,7 @@ GrillaEmpleado::~GrillaEmpleado() {
 	delete _fifo;
 }
 
-unsigned int GrillaEmpleado::esperarTrabajo(unsigned int idEmpleado) {
+int GrillaEmpleado::esperarTrabajo(unsigned int idEmpleado) {
 	int idAuto;
 	_fifo->leer(&idAuto, sizeof(int));
 	return idAuto;

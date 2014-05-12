@@ -53,42 +53,49 @@ int main(int argc, char* argv[]) {
 	GrillaEmpleado grillaEmpleado(cantEmpleados,idEmpleado);
 	Surtidores surtidores(cantSurtidores);
 
-	unsigned int idAuto, idSurtidor;
+	int idAuto, idSurtidor;
 	double monto;
 	std::string idAutoStr, idSurtidorStr, montoStr;
+	bool trabajando = true;
 
-	while (true) {
+	while(trabajando) {
 		Logger::debug("Entro a la cola de empleados libres", me);
 		// Me encolo en una cola que no sé dónde está (bloq)
 		Logger::debug("Soy el próximo en la cola, el próximo auto me toca a mí", me);
 		// Leo 4 bytes del fifo del jefe (bloq)
 		idAuto = grillaEmpleado.esperarTrabajo(idEmpleado);
-		// idAuto = rand() % 10000;
-		idAutoStr = toString(idAuto);
-		Logger::debug("El jefe me asignó el auto: " + idAutoStr + ". Voy a buscar surtidor libre", me);
-		// Pido paso al semáforo de surtidores (bloq)
-		// Busco en la tabla un surtidor libre, y lo marco como ocupado
-		idSurtidor = surtidores.conseguirSurtidorLibre(idEmpleado);
-		// idSurtidor = rand() % 10;
-		idSurtidorStr = toString(idSurtidor);
-		Logger::debug("Está libre el surtidor: " + idSurtidorStr + ". Cargando al auto: " + idAutoStr + "...", me);
-		// Cargo la nafta (delay random) (bloq)
-		sleep(rand() % 10 + 2);
-		// Dejo de usar el surtidor y lo informo
-		surtidores.liberarSurtidor(idSurtidor);
-		Logger::debug("Terminé de cargarle al auto: " + idAutoStr + ". Libero el surtidor: " + idSurtidorStr, me);
-		monto = (rand() % 20000 + 5000) / 100.0;
-		montoStr = toString(monto);
-		Logger::debug("Voy a la caja registradora a depositar: " + montoStr, me);
-		// Pido paso al semáforo de la caja registradora (bloq)
-		// Sumo la cantidad total de dinero que me pagó el auto (delay random pequeño) (bloq)
-		cajaRegistradora.depositar(monto);
-		Logger::debug("Deposité en la caja registradora: " + montoStr + " y vuelvo a ponerme libre", me);
-		// Marco en la grilla que ya estoy libre
-		grillaEmpleado.avisarTrabajoTerminado(idEmpleado);
+		// Detectamos el fin de la estacion con un -1 como id de auto
+		if(idAuto == -1) {
+		  trabajando = false;
+		}else{
+		  // idAuto = rand() % 10000;
+		  idAutoStr = toString(idAuto);
+		  Logger::debug("El jefe me asignó el auto: " + idAutoStr + ". Voy a buscar surtidor libre", me);
+		  // Pido paso al semáforo de surtidores (bloq)
+		  // Busco en la tabla un surtidor libre, y lo marco como ocupado
+		  idSurtidor = surtidores.conseguirSurtidorLibre(idEmpleado);
+		  // idSurtidor = rand() % 10;
+		  idSurtidorStr = toString(idSurtidor);
+		  Logger::debug("Está libre el surtidor: " + idSurtidorStr + ". Cargando al auto: " + idAutoStr + "...", me);
+		  // Cargo la nafta (delay random) (bloq)
+		  sleep(rand() % 10 + 2);
+		  // Dejo de usar el surtidor y lo informo
+		  surtidores.liberarSurtidor(idSurtidor);
+		  Logger::debug("Terminé de cargarle al auto: " + idAutoStr + ". Libero el surtidor: " + idSurtidorStr, me);
+		  monto = (rand() % 20000 + 5000) / 100.0;
+		  montoStr = toString(monto);
+		  Logger::debug("Voy a la caja registradora a depositar: " + montoStr, me);
+		  // Pido paso al semáforo de la caja registradora (bloq)
+		  // Sumo la cantidad total de dinero que me pagó el auto (delay random pequeño) (bloq)
+		  cajaRegistradora.depositar(monto);
+		  Logger::debug("Deposité en la caja registradora: " + montoStr + " y vuelvo a ponerme libre", me);
+		  // Marco en la grilla que ya estoy libre
+		  grillaEmpleado.avisarTrabajoTerminado(idEmpleado);
+		}
 	}
 
 
+	Logger::debug("Fin de empleado", me);
 	Logger::destroy();
 
 	return 0;

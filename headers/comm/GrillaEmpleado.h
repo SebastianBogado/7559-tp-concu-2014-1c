@@ -23,7 +23,7 @@ public:
 	virtual ~GrillaEmpleado();
 
 	// Metodo usado por el empleado para esperar su siguiente trabajo
-	unsigned int esperarTrabajo(unsigned int idEmpleado);
+	int esperarTrabajo(unsigned int idEmpleado);
 
 	// Metodo usado por un empleado que se libera de su trabajo para avisar al jefe
 	void avisarTrabajoTerminado(unsigned int idEmpleado);
