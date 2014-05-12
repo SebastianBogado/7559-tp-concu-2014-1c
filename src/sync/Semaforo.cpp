@@ -28,8 +28,11 @@ int Semaforo :: inicializar () const {
 	};
 
 	semnum flag;
+	struct semid_ds buf;
 	semnum init;
 
+	// Check si el sem ya fue inicializado
+	flag.buf = &buf;
 	semctl(this->id,0,IPC_STAT,flag);
 	if (flag.buf->sem_otime == 0) {
 		// No ha sido inicializado!
