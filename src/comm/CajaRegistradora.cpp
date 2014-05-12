@@ -80,8 +80,10 @@ void CajaRegistradora::inicializarCaja() {
 }
 
 void CajaRegistradora::destruirCaja() {
+	_caja.liberar();
 	remove(shmemCaja.c_str());
 	remove(semCaja.c_str());
+	_sem.eliminar();
 }
 
 double CajaRegistradora::consultarMonto() const {

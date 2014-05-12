@@ -144,22 +144,23 @@ void Surtidores::inicializarSurtidoresDesocupados() {
 }
 
 void Surtidores::destruirSurtidores(unsigned int cantSurtidores) {
+
 	remove(shmemSurtidores.c_str());
 	remove(semSurtidoresDisponibles.c_str());
 	for(unsigned int i = 0; i < cantSurtidores; i++) {
 		std::string filename("/tmp/Surtidor" + toString(i));
 		remove(filename.c_str());
 	}
-}
 
-Surtidores::~Surtidores() {
-	//_surtidores.liberar();
-/*
 	for (unsigned int i = 0; i < _sems.size(); i++)
 		_sems[i].eliminar();
 
 	_surtidoresDisponibles.eliminar();
-*/
+	
+}
+
+Surtidores::~Surtidores() {
+	_surtidores.liberar();
 }
 
 unsigned int Surtidores::conseguirSurtidorLibre(unsigned int idEmpleado) {

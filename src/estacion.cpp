@@ -50,13 +50,14 @@ int main(int argc, char* argv[]) {
 
 	// TODO: Ordenar la creacion de este fifo. Encapsularlo porque queda feito
 	FifoEscritura fifoAutosJefe(fifoInputJefe);
+	
 	try {
 		fifoAutosJefe.crear();
 	} catch(std::string& msg) {
-		std::string _msg("Error en al creacion del fifo entre input y jefe");
-		Logger::error(_msg, me);
+		Logger::error("Error en al creacion del fifo entre input y jefe: " + msg, me);
 		exit(1);
 	}
+	
 	CajaRegistradora caja;
 	Grilla grilla;
 	GrillaJefe grillaJefe(parser.cantEmpleados());
@@ -65,10 +66,10 @@ int main(int argc, char* argv[]) {
 	try {
 		inicializarSharedObjects(caja, grilla, grillaJefe, surtidores, parser.cantEmpleados(), parser.cantSurtidores());
 	} catch(std::string& msg) {
-		std::string _msg("Error en la inicializacion de objetos compartidos");
-		Logger::error(_msg, me);
+		Logger::error("Error en la inicializacion de objetos compartidos: " + msg, me);
 		exit(1);
 	}
+
 	// Ret val para los fork
 	pid_t pid;
 	pid = fork();
@@ -119,7 +120,7 @@ int main(int argc, char* argv[]) {
 		}else{
 			if(!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
 				std::stringstream ss;
-				ss << "pid " << done << " failed";
+				ss << "Proceso con pid  " << done << " fallo";
 				Logger::log(ss.str(), Logger::LOG_CRITICAL, me);
 				Logger::destroy();
 				exit(1);
@@ -128,19 +129,19 @@ int main(int argc, char* argv[]) {
 	}
 
 	Logger::debug("All children done", me);
-
-	//fifoAutosJefe.eliminar();
+	
 	try {
-	caja.destruirCaja();
-	Logger::debug("La caja registradora se ha destruido por completo", me);
-	grilla.destruir(parser.cantEmpleados());
-	Logger::debug("La grilla se ha destruido por completo", me);
-	grillaJefe.destruirGrillaJefe(parser.cantEmpleados());
-	Logger::debug("La grilla del jefe se ha destruido por completo", me);
-	surtidores.destruirSurtidores(parser.cantSurtidores());
-	Logger::debug("Los surtidores se han destruido por completo", me);
+		fifoAutosJefe.eliminar();
+		caja.destruirCaja();
+		Logger::debug("La caja registradora se ha destruido por completo", me);
+		grilla.destruir(parser.cantEmpleados());
+		Logger::debug("La grilla se ha destruido por completo", me);
+		grillaJefe.destruirGrillaJefe(parser.cantEmpleados());
+		Logger::debug("La grilla del jefe se ha destruido por completo", me);
+		surtidores.destruirSurtidores(parser.cantSurtidores());
+		Logger::debug("Los surtidores se han destruido por completo", me);
 	} catch(std::string& msg) {
-		Logger::debug("Error en algunos de los ::destruir", me);
+		Logger::debug("Error en algunos de los ::destruir: " + msg, me);
 	}
 
 	Logger::destroy();
@@ -154,4 +155,5 @@ void inicializarSharedObjects(CajaRegistradora& caja, Grilla& grilla, GrillaJefe
 	grilla.inicializarGrilla(cantEmpleados);
 	grillaJefe.inicializarGrillaJefe();
 	surtidores.inicializarSurtidores(cantSurtidores);
+	surtidores.crearSurtidores(cantSurtidores);
 }

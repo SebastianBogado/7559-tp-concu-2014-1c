@@ -130,22 +130,6 @@ template <class T> MemoriaCompartida<T>::MemoriaCompartida ( const MemoriaCompar
 }
 
 template <class T> MemoriaCompartida<T>::~MemoriaCompartida () {
-	std::string me = this->me + ":~MemoriaCompartida";
-	int errorDt = shmdt ( static_cast<void*> (this->ptrDatos) );
-
-	if ( errorDt != -1 ) {
-		int procAdosados = this->cantidadProcesosAdosados ();
-		if ( procAdosados == 0 ) {
-			if (shmctl ( this->shmId,IPC_RMID,NULL ) == -1) {
-				std::string mensaje = std::string("Error destruyendo el Array Compartido al no haber procesos attacheados. Error: ") + std::string(strerror(errno));
-				Logger::error(mensaje, me);
-			}
-		}
-	} else {
-		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
-		std::cerr << mensaje << std::endl;
-		Logger::error(mensaje, me);
-	}
 }
 
 template <class T> MemoriaCompartida<T>& MemoriaCompartida<T>::operator= ( const MemoriaCompartida& origen ) {

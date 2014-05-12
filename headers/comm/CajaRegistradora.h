@@ -20,7 +20,7 @@
 
 class CajaRegistradora {
 private:
-	MemoriaCompartida<double> _caja;
+	MemoriaCompartida<float> _caja;
 	Semaforo _sem;
 	std::string me;
 public:

@@ -121,4 +121,8 @@ void Grilla::destruir(unsigned int cantEmpleados) {
 		std::string filename("/tmp/Empleado" + toString(i));
 		remove(filename.c_str());
 	}
+	_mem.liberar();
+	for(unsigned int i = 0; i < _sems.size(); i++) {
+		_sems[i].eliminar();
+	}
 }

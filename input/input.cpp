@@ -70,7 +70,6 @@ int main(int argc, const char* argv[]) {
 	
 	// Close del fifo y cleanup del archivo
 	canal.cerrar();
-	canal.eliminar();
 
 	return 0;
 }
