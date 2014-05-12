@@ -166,7 +166,7 @@ template <class T> ArrayCompartido<T>& ArrayCompartido<T>::operator= ( const Arr
 }
 
 template <class T> void ArrayCompartido<T>::escribir ( const T& dato, const unsigned int id ) {
-	this->ptrDatos[id] = id;
+	this->ptrDatos[id] = dato;
 }
 
 template <class T> T ArrayCompartido<T>::leer(const unsigned int id) const {

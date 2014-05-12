@@ -34,9 +34,10 @@ void GrillaJefe::inicializarGrilla(unsigned int cantEmpleados) {
 }
 
 unsigned int GrillaJefe::getEmpleadoLibre() const {
-	for(unsigned int i = 0; i < _mem.size(); i++) {
+	for(unsigned int i = 0; i < _cantEmpleados; i++) {
 		_sems[i].p();
 		unsigned int ocupado = _mem.leer(i);
+		Logger::debug("Se ha leido el estado " + toString(ocupado) + " del empleado " + toString(i));
 		_sems[i].v();
 		// 0 == Libre, 1 == Ocupado
 		if (!ocupado)	return i;
