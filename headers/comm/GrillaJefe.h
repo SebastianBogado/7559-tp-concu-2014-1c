@@ -21,11 +21,16 @@ private:
 	std::vector<FifoEscritura> _fifo;
 	unsigned int _cantEmpleados;
 
-	void inicializarGrilla(unsigned int cantEmpleados);
+	void inicializarGrillaJefeEmpleados(unsigned int cantEmpleados);
 
 public:
 	GrillaJefe(unsigned int cantEmpleados);
 	virtual ~GrillaJefe();
+
+	void crearGrillaJefe();
+	// Se crean los FIFOs correspondientes a los empleados
+	void inicializarGrillaJefe();
+	static void destruirGrillaJefe(unsigned int cantEmpleados);
 
 	// Devuelve el ID de algun emplado libre. Si no hay ninguno libre, devuelve -1
 	unsigned int getEmpleadoLibre() const;

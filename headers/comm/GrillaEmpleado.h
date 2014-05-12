@@ -19,8 +19,10 @@ private:
 	FifoLectura* _fifo;
 
 public:
-	GrillaEmpleado(unsigned int cantEmpleados, unsigned int idEmpleado);
+	GrillaEmpleado();
 	virtual ~GrillaEmpleado();
+
+	void crearGrillaEmpleado(unsigned int cantEmpleados, unsigned int idEmpleado);
 
 	// Metodo usado por el empleado para esperar su siguiente trabajo
 	int esperarTrabajo(unsigned int idEmpleado);
@@ -28,8 +30,6 @@ public:
 	// Metodo usado por un empleado que se libera de su trabajo para avisar al jefe
 	void avisarTrabajoTerminado(unsigned int idEmpleado);
 };
-
-
 
 
 #endif /* GRILLAEMPLEADO_H_ */

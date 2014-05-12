@@ -21,13 +21,21 @@
 class CajaRegistradora {
 private:
 	MemoriaCompartida<double> _caja;
-	Semaforo* _sem;
+	Semaforo _sem;
 	std::string me;
 public:
 	CajaRegistradora();
 	virtual ~CajaRegistradora();
 
-	static void destruirCaja();
+	// Este metodo lo usan todos los que quieran obtener la caja. Se obtendra la misma shmem para cada instancia
+	void crearCaja();
+
+	// Este metodo lo usará solo el que cree por primera vez la caja
+	void inicializarCaja();
+
+	// Este metodolo usará solo el proceso que haya creado la caja
+	void destruirCaja();
+
 	double consultarMonto() const;
 	void depositar(const double monto);
 };

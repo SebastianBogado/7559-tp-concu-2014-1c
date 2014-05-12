@@ -26,13 +26,15 @@ private:
 
 	Semaforo _surtidoresDisponibles;
 
-	void inicializarSurtidores();
+	void inicializarSurtidoresDesocupados();
 
 public:
-	Surtidores(unsigned int cantSurtidores);
+	Surtidores();
 	virtual ~Surtidores();
 
-	void destruirSurtidores();
+	void crearSurtidores(unsigned int cantSurtidores);
+	void inicializarSurtidores(unsigned int cantSurtidores);
+	void destruirSurtidores(unsigned int cantSurtidores);
 
 	// Este metodo consigue un surtidor de la lista. Devuelve el numero de surtidor que le toco al empleado
 	unsigned int conseguirSurtidorLibre(unsigned int idEmpleado);

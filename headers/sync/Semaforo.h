@@ -6,6 +6,10 @@
 #include <sys/types.h>
 #include <string>
 
+// Check de error y log
+#include <cstring>
+#include <cerrno>
+
 class Semaforo {
 
 private:

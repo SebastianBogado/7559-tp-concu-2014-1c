@@ -9,6 +9,7 @@
 #include <iostream>
 #include <errno.h>
 #include "logger/Logger.h"
+#include "common.h"
 
 template <class T> class MemoriaCompartida {
 
@@ -49,6 +50,8 @@ template <class T> void MemoriaCompartida<T>::crear ( const std::string& archivo
 			void* tmpPtr = shmat ( this->shmId,NULL,0 );
 			if ( tmpPtr != (void*) -1 ) {
 				this->ptrDatos = static_cast<T*> (tmpPtr);
+				std::string mensaje = std::string("La cantidad de procesos attacheados al array compartido es de: ") + toString(cantidadProcesosAdosados());
+				Logger::debug(mensaje, me);
 			} else {
 				std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 				Logger::error(mensaje, me);
@@ -73,7 +76,10 @@ template <class T> void MemoriaCompartida<T>::liberar() {
 	if ( errorDt != -1 ) {
 		int procAdosados = this->cantidadProcesosAdosados ();
 		if ( procAdosados == 0 ) {
-			shmctl ( this->shmId,IPC_RMID,NULL );
+			if (shmctl ( this->shmId,IPC_RMID,NULL ) == -1) {
+				std::string mensaje = std::string("Error destruyendo el Array Compartido al no haber procesos attacheados. Error: ") + std::string(strerror(errno));
+				Logger::error(mensaje, me);
+			}
 		}
 	} else {
 		std::string mensaje = std::string("Error en shmdt(): ") + std::string(strerror(errno));
@@ -130,7 +136,10 @@ template <class T> MemoriaCompartida<T>::~MemoriaCompartida () {
 	if ( errorDt != -1 ) {
 		int procAdosados = this->cantidadProcesosAdosados ();
 		if ( procAdosados == 0 ) {
-			shmctl ( this->shmId,IPC_RMID,NULL );
+			if (shmctl ( this->shmId,IPC_RMID,NULL ) == -1) {
+				std::string mensaje = std::string("Error destruyendo el Array Compartido al no haber procesos attacheados. Error: ") + std::string(strerror(errno));
+				Logger::error(mensaje, me);
+			}
 		}
 	} else {
 		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
@@ -165,7 +174,10 @@ template <class T> T MemoriaCompartida<T>::leer() const {
 
 template <class T> int MemoriaCompartida<T> :: cantidadProcesosAdosados () const {
 	shmid_ds estado;
-	shmctl ( this->shmId,IPC_STAT,&estado );
+	if (shmctl ( this->shmId,IPC_STAT,&estado ) == -1) {
+		std::string mensaje = std::string("Error en shmctl() al verificar la cantidad de procesos adosados: ") + std::string(strerror(errno));
+		Logger::error(mensaje, me);
+	}
 	return estado.shm_nattch;
 }
 

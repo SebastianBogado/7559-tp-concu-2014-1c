@@ -50,8 +50,33 @@ int main(int argc, char* argv[]) {
 	// Get shmem sólo con cantEmpleados según Fer
 
 	CajaRegistradora cajaRegistradora;
-	GrillaEmpleado grillaEmpleado(cantEmpleados,idEmpleado);
-	Surtidores surtidores(cantSurtidores);
+	try {
+		cajaRegistradora.crearCaja();
+	} catch(std::string& msg) {
+		std::string _msg("Error en la creacion de la caja registradora");
+		Logger::error(_msg, me);
+		exit(1);
+	}
+	Logger::notice("Caja registradora inicializada...", me);
+
+	GrillaEmpleado grillaEmpleado;
+	try {
+		grillaEmpleado.crearGrillaEmpleado(cantEmpleados,idEmpleado);
+	} catch(std::string& msg) {
+		std::string _msg("Error en la creacion de la grilla del empleado");
+		Logger::error(_msg, me);
+		exit(1);
+	}
+	Logger::notice("Grilla de empleado inicializada...", me);
+
+	Surtidores surtidores;
+	try {
+		surtidores.crearSurtidores(cantSurtidores);
+	} catch(std::string& msg) {
+		std::string _msg("Error en la creacion de los surtidores del empleado");
+		Logger::error(_msg, me);
+		exit(1);
+	}
 
 	int idAuto, idSurtidor;
 	double monto;

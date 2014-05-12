@@ -37,6 +37,14 @@ int main(int argc, char* argv[]) {
 	Logger::debug("Init jefeEstacion", me);
 
 	GrillaJefe grillaJefe(cantEmpleados);
+	try {
+		grillaJefe.crearGrillaJefe();
+	} catch(std::string& msg) {
+		std::string _msg("Error al crear la grilla del jefe");
+		Logger::error(_msg, me);
+		//TODO: Destrucciones
+		exit(1);
+	}
 
 	// Setup del pipe de input
 	FifoLectura canal(fifoInputJefe);

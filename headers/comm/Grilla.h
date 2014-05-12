@@ -26,10 +26,12 @@ protected:
 	std::string me;
 
 public:
-	Grilla(unsigned int cantEmpleados);
+	Grilla();
 	virtual ~Grilla();
 
-	static void destruir(unsigned int cantEmpleados);
+	void crearGrilla(unsigned int cantEmpleados);
+	void inicializarGrilla(unsigned int cantEmpleados);
+	void destruir(unsigned int cantEmpleados);
 };
 
 #endif /* GRILLA_H_ */

@@ -20,6 +20,12 @@
 #include "common.h"
 #include "comm/ArgHelper.h"
 
+#include "comm/CajaRegistradora.h"
+#include "comm/GrillaJefe.h"
+#include "comm/Surtidores.h"
+
+void inicializarSharedObjects(CajaRegistradora& caja, Grilla& grilla, GrillaJefe& grillaJefe, Surtidores& surtidores, unsigned int cantEmpleados, unsigned int cantSurtidores);
+
 int main(int argc, char* argv[]) {
 	const std::string me = __FILE__ ":main";
 	
@@ -41,6 +47,18 @@ int main(int argc, char* argv[]) {
 	
 	Logger::debug("Se ha parseado la linea de comandos", me);
 
+	CajaRegistradora caja;
+	Grilla grilla;
+	GrillaJefe grillaJefe(parser.cantEmpleados());
+	Surtidores surtidores;
+
+	try {
+		inicializarSharedObjects(caja, grilla, grillaJefe, surtidores, parser.cantEmpleados(), parser.cantSurtidores());
+	} catch(std::string& msg) {
+		std::string _msg("Error en la inicializacion de objetos compartidos");
+		Logger::error(_msg, me);
+		exit(1);
+	}
 	// Ret val para los fork
 	pid_t pid;
 	pid = fork();
@@ -99,8 +117,21 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
+	caja.destruirCaja();
+	grilla.destruir(parser.cantEmpleados());
+	grillaJefe.destruirGrillaJefe(parser.cantEmpleados());
+	surtidores.destruirSurtidores(parser.cantSurtidores());
+
 	Logger::debug("All children done", me);
 	Logger::destroy();
 
 	return 0;
+}
+
+void inicializarSharedObjects(CajaRegistradora& caja, Grilla& grilla, GrillaJefe& grillaJefe, Surtidores& surtidores,
+		unsigned int cantEmpleados, unsigned int cantSurtidores) {
+	caja.inicializarCaja();
+	grilla.inicializarGrilla(cantEmpleados);
+	grillaJefe.inicializarGrillaJefe();
+	surtidores.inicializarSurtidores(cantSurtidores);
 }
