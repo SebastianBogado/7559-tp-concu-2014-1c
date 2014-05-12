@@ -21,7 +21,7 @@
 
 class Grilla {
 protected:
-	ArrayCompartido<unsigned int> _mem;
+	ArrayCompartido<int> _mem;
 	std::vector<Semaforo> _sems;
 
 public:

@@ -47,5 +47,13 @@ void GrillaJefe::asignarTrabajo(unsigned int idAuto, unsigned int idEmpleado) {
 	_fifo.escribir(&idAuto, sizeof(unsigned int));
 }
 
+void GrillaJefe::avisarTerminarTrabajo(unsigned int cantEmpleados) {
+	for(unsigned int i = 0; i < cantEmpleados; i++) {
+		// Siempre se comienza con todos los empleados disponibles
+		_sems[i].p();
+		_mem.escribir(-1,i);
+		_sems[i].v();
+	}
+}
 
 
