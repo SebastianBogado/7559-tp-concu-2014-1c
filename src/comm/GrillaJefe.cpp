@@ -69,10 +69,10 @@ void GrillaJefe::destruirGrillaJefe(unsigned int cantEmpleados) {
 }
 
 GrillaJefe::~GrillaJefe() {
-	for (unsigned int i = 0; i < _cantEmpleados; i++) {
-		_fifo[i].cerrar();
+	//for (unsigned int i = 0; i < _cantEmpleados; i++) {
+		//_fifo[i].cerrar();
 		//_fifo[i].eliminar();
-	}
+	//}
 }
 
 void GrillaJefe::inicializarGrillaJefeEmpleados(unsigned int cantEmpleados) {

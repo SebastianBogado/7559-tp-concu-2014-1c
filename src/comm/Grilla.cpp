@@ -109,10 +109,10 @@ void Grilla::inicializarGrilla(unsigned int cantEmpleados) {
 }
 
 Grilla::~Grilla() {
-	_mem.liberar();
-	for(unsigned int i = 0; i < _sems.size(); i++) {
-		_sems[i].eliminar();
-	}
+	//_mem.liberar();
+	//for(unsigned int i = 0; i < _sems.size(); i++) {
+		//_sems[i].eliminar();
+	//}
 }
 
 void Grilla::destruir(unsigned int cantEmpleados) {

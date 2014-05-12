@@ -154,11 +154,12 @@ void Surtidores::destruirSurtidores(unsigned int cantSurtidores) {
 
 Surtidores::~Surtidores() {
 	//_surtidores.liberar();
-
+/*
 	for (unsigned int i = 0; i < _sems.size(); i++)
 		_sems[i].eliminar();
 
 	_surtidoresDisponibles.eliminar();
+*/
 }
 
 unsigned int Surtidores::conseguirSurtidorLibre(unsigned int idEmpleado) {

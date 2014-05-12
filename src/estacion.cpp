@@ -127,12 +127,22 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	caja.destruirCaja();
-	grilla.destruir(parser.cantEmpleados());
-	grillaJefe.destruirGrillaJefe(parser.cantEmpleados());
-	surtidores.destruirSurtidores(parser.cantSurtidores());
-
 	Logger::debug("All children done", me);
+
+	//fifoAutosJefe.eliminar();
+	try {
+	caja.destruirCaja();
+	Logger::debug("La caja registradora se ha destruido por completo", me);
+	grilla.destruir(parser.cantEmpleados());
+	Logger::debug("La grilla se ha destruido por completo", me);
+	grillaJefe.destruirGrillaJefe(parser.cantEmpleados());
+	Logger::debug("La grilla del jefe se ha destruido por completo", me);
+	surtidores.destruirSurtidores(parser.cantSurtidores());
+	Logger::debug("Los surtidores se han destruido por completo", me);
+	} catch(std::string& msg) {
+		Logger::debug("Error en algunos de los ::destruir", me);
+	}
+
 	Logger::destroy();
 
 	return 0;

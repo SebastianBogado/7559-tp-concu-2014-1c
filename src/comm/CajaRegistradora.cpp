@@ -98,5 +98,7 @@ void CajaRegistradora::depositar(const double monto) {
 	_sem.p();
 	double montoActual = _caja.leer();
 	_caja.escribir(montoActual + monto);
+	montoActual = _caja.leer();
+	Logger::notice(std::string("La caja ahora contiene ") + toString(montoActual));
 	_sem.v();
 }
