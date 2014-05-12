@@ -37,7 +37,10 @@ template <class T> MemoriaCompartida<T>::MemoriaCompartida ():shmId(0),ptrDatos(
 
 template <class T> void MemoriaCompartida<T>::crear ( const std::string& archivo,const char letra ) {
 	std::string me = this->me + ":crear";
+	Logger::debug("Iniciando creación de la memoria compartida", me);
 	key_t clave = ftok ( archivo.c_str(),letra );
+	Logger::debug("Se obtiene la clave para la memoria compartida", me);
+
 
 	if ( clave > 0 ) {
 		this->shmId = shmget ( clave,sizeof(T),0644|IPC_CREAT );
@@ -130,7 +133,7 @@ template <class T> MemoriaCompartida<T>::~MemoriaCompartida () {
 			shmctl ( this->shmId,IPC_RMID,NULL );
 		}
 	} else {
-		std::string mensaje = "Error en shmdt(): " << strerror(errno);
+		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 		std::cerr << mensaje << std::endl;
 		Logger::error(mensaje, me);
 	}

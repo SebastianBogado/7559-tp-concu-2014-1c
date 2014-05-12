@@ -8,18 +8,20 @@
 #ifndef CAJAREGISTRADORA_H_
 #define CAJAREGISTRADORA_H_
 
-#include "comm/MemoriaCompartida2.h"
+#include "comm/MemoriaCompartida.h"
 #include "sync/Semaforo.h"
 #include <vector>
 #include <cstdlib>
 #include <cstdio>
+#include <string>
 #include "logger/Logger.h"
 #include "common.h"
 
 class CajaRegistradora {
 private:
-	MemoriaCompartida2<double> _caja;
+	MemoriaCompartida<double> _caja;
 	Semaforo* _sem;
+	std::string me;
 public:
 	CajaRegistradora();
 	virtual ~CajaRegistradora();
