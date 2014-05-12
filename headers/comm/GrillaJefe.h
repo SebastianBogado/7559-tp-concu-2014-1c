@@ -14,10 +14,12 @@
 #include "FifoEscritura.h"
 #include "common.h"
 #include "logger/Logger.h"
+#include <vector>
 
 class GrillaJefe : public Grilla {
 private:
-	FifoEscritura _fifo;
+	std::vector<FifoEscritura> _fifo;
+	unsigned int _cantEmpleados;
 
 	void inicializarGrilla(unsigned int cantEmpleados);
 

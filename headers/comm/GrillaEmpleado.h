@@ -12,13 +12,14 @@
 #include "FifoLectura.h"
 #include "common.h"
 #include "logger/Logger.h"
+#include <vector>
 
 class GrillaEmpleado : public Grilla {
 private:
-	FifoLectura _fifo;
+	FifoLectura* _fifo;
 
 public:
-	GrillaEmpleado(unsigned int cantEmpleados);
+	GrillaEmpleado(unsigned int cantEmpleados, unsigned int idEmpleado);
 	virtual ~GrillaEmpleado();
 
 	// Metodo usado por el empleado para esperar su siguiente trabajo

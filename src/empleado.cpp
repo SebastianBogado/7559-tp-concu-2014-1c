@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 	// Get shmem sólo con cantEmpleados según Fer
 
 	CajaRegistradora cajaRegistradora;
-	GrillaEmpleado grillaEmpleado(cantEmpleados);
+	GrillaEmpleado grillaEmpleado(cantEmpleados,idEmpleado);
 	Surtidores surtidores(cantSurtidores);
 
 	unsigned int idAuto, idSurtidor;

@@ -7,18 +7,22 @@
 
 #include "comm/GrillaEmpleado.h"
 
-GrillaEmpleado::GrillaEmpleado(unsigned int cantEmpleados) : Grilla(cantEmpleados),_fifo(fifoJefeEmpleados) {
-	_fifo.abrir();
+GrillaEmpleado::GrillaEmpleado(unsigned int cantEmpleados, unsigned int idEmpleado) : Grilla(cantEmpleados) {
+	std::string filename(fifoJefeEmpleados + toString(idEmpleado));
+	// TODO: Error correction! Mover a un metodo "crear"
+	_fifo = new FifoLectura(filename);
+	_fifo->abrir();
 }
 
 GrillaEmpleado::~GrillaEmpleado() {
-	_fifo.cerrar();
-	_fifo.eliminar();
+	_fifo->cerrar();
+	_fifo->eliminar();
+	delete _fifo;
 }
 
 unsigned int GrillaEmpleado::esperarTrabajo(unsigned int idEmpleado) {
 	unsigned int idAuto;
-	_fifo.leer(&idAuto, sizeof(unsigned int));
+	_fifo->leer(&idAuto, sizeof(unsigned int));
 	return idAuto;
 }
 

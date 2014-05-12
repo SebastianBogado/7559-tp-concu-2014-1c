@@ -7,14 +7,21 @@
 
 #include "comm/GrillaJefe.h"
 
-GrillaJefe::GrillaJefe(unsigned int cantEmpleados) : Grilla(cantEmpleados),_fifo(fifoJefeEmpleados) {
-	_fifo.abrir();
+GrillaJefe::GrillaJefe(unsigned int cantEmpleados) : Grilla(cantEmpleados), _cantEmpleados(cantEmpleados) {
+	for (unsigned int i = 0; i < cantEmpleados; i++) {
+		std::string filename(fifoJefeEmpleados + toString(i));
+		FifoEscritura tmpFifo(filename);
+		_fifo.push_back(tmpFifo);
+		_fifo[i].abrir();
+	}
 	inicializarGrilla(cantEmpleados);
 }
 
 GrillaJefe::~GrillaJefe() {
-	_fifo.cerrar();
-	_fifo.eliminar();
+	for (unsigned int i = 0; i < _cantEmpleados; i++) {
+		_fifo[i].cerrar();
+		_fifo[i].eliminar();
+	}
 }
 
 void GrillaJefe::inicializarGrilla(unsigned int cantEmpleados) {
@@ -44,7 +51,7 @@ void GrillaJefe::asignarTrabajo(unsigned int idAuto, unsigned int idEmpleado) {
 	_mem.escribir(1, idEmpleado);
 	_sems[idEmpleado].v();
 
-	_fifo.escribir(&idAuto, sizeof(unsigned int));
+	_fifo[idEmpleado].escribir(&idAuto, sizeof(unsigned int));
 }
 
 void GrillaJefe::avisarTerminarTrabajo(unsigned int cantEmpleados) {
