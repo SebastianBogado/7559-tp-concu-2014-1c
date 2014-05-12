@@ -46,21 +46,19 @@ unsigned int GrillaJefe::getEmpleadoLibre() const {
 	return -1;
 }
 
-void GrillaJefe::asignarTrabajo(unsigned int idAuto, unsigned int idEmpleado) {
+void GrillaJefe::asignarTrabajo(int idAuto, unsigned int idEmpleado) {
 	// Encontro un empleado libre, entonces marca la shared lookup table y le escribe el ID de auto en el pipe
 	_sems[idEmpleado].p();
 	_mem.escribir(1, idEmpleado);
 	_sems[idEmpleado].v();
 
-	_fifo[idEmpleado].escribir(&idAuto, sizeof(unsigned int));
+	_fifo[idEmpleado].escribir(&idAuto, sizeof(int));
 }
 
 void GrillaJefe::avisarTerminarTrabajo(unsigned int cantEmpleados) {
+	int idTrabajoTerminado = -1;
 	for(unsigned int i = 0; i < cantEmpleados; i++) {
-		// Siempre se comienza con todos los empleados disponibles
-		_sems[i].p();
-		_mem.escribir(-1,i);
-		_sems[i].v();
+		_fifo[i].escribir(&idTrabajoTerminado, sizeof(int));
 	}
 }
 

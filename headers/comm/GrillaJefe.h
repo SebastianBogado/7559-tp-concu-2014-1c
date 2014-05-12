@@ -31,7 +31,7 @@ public:
 	unsigned int getEmpleadoLibre() const;
 
 	// Metodo usado por el jefe para marcar la LookUpTable como empleado asignado
-	void asignarTrabajo(unsigned int idAuto, unsigned int idEmpleado);
+	void asignarTrabajo(int idAuto, unsigned int idEmpleado);
 
 	// Le avisa a todos los empleados que el trabajo termino y se pueden ir a casa :D
 	void avisarTerminarTrabajo(unsigned int cantEmpleados);
