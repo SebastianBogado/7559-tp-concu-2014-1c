@@ -21,7 +21,7 @@ template <class T> class ArrayCompartido {
 
 private:
 	int	shmId;
-	T**	ptrDatos;
+	T*	ptrDatos;
 	unsigned int _size;
 	std::string me;  // Debugging purposes
 
@@ -46,16 +46,15 @@ template <class T> ArrayCompartido<T>::ArrayCompartido():shmId(0),ptrDatos(NULL)
 
 template <class T> void ArrayCompartido<T>::crear(const std::string& archivo,const char letra,const unsigned int tam) {
 	std::string me = this->me + ":crear";
-	std::ofstream arch(archivo.c_str());
 	key_t clave = ftok ( archivo.c_str(),letra );
 
 	if ( clave > 0 ) {
 		this->shmId = shmget ( clave,sizeof(T) * tam,0644|IPC_CREAT );
 		this->_size = tam;
 		if ( this->shmId > 0 ) {
-			void* tmpPtr = shmat ( this->shmId,NULL,0 );
+			void* tmpPtr = (void*) shmat ( this->shmId,NULL,0 );
 			if ( tmpPtr != (void*) -1 ) {
-				this->ptrDatos = static_cast<T**> (tmpPtr);
+				this->ptrDatos = static_cast<T*> (tmpPtr);
 			} else {
 				std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 				Logger::error(mensaje, me);
@@ -75,9 +74,10 @@ template <class T> void ArrayCompartido<T>::crear(const std::string& archivo,con
 
 template <class T> void ArrayCompartido<T>::liberar() {
 	std::string me = this->me + ":liberar";
-	int errorDt = shmdt ( (void **) this->ptrDatos );
+	int errorDt = shmdt ( (void *) this->ptrDatos );
 
 	if ( errorDt != -1 ) {
+		this->ptrDatos = NULL;
 		int procAdosados = this->cantidadProcesosAdosados ();
 		if ( procAdosados == 0 ) {
 			shmctl ( this->shmId,IPC_RMID,NULL );
@@ -99,7 +99,7 @@ template <class T> ArrayCompartido<T>::ArrayCompartido(const std::string& archiv
 		if ( this->shmId > 0 ) {
 			void* tmpPtr = shmat ( this->shmId,NULL,0 );
 			if ( tmpPtr != (void*) -1 ) {
-				this->ptrDatos = static_cast<T**> (tmpPtr);
+				this->ptrDatos = static_cast<T*> (tmpPtr);
 			} else {
 				std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 				Logger::error(mensaje, me);
@@ -122,7 +122,7 @@ template <class T> ArrayCompartido<T>::ArrayCompartido ( const ArrayCompartido& 
 	void* tmpPtr = shmat ( origen.shmId,NULL,0 );
 
 	if ( tmpPtr != (void*) -1 ) {
-		this->ptrDatos = static_cast<T**> (tmpPtr);
+		this->ptrDatos = static_cast<T*> (tmpPtr);
 	} else {
 		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 		Logger::error(mensaje, me);
@@ -131,18 +131,20 @@ template <class T> ArrayCompartido<T>::ArrayCompartido ( const ArrayCompartido& 
 }
 
 template <class T> ArrayCompartido<T>::~ArrayCompartido () {
-	std::string me = this->me + ":~ArrayCompartido";
-	int errorDt = shmdt ( (void**) (this->ptrDatos) );
+	if (this->ptrDatos != NULL) {
+		std::string me = this->me + ":~ArrayCompartido";
+		int errorDt = shmdt ( (void*) (this->ptrDatos) );
 
-	if ( errorDt != -1 ) {
-		int procAdosados = this->cantidadProcesosAdosados ();
-		if ( procAdosados == 0 ) {
-			shmctl ( this->shmId,IPC_RMID,NULL );
+		if ( errorDt != -1 ) {
+			int procAdosados = this->cantidadProcesosAdosados ();
+			if ( procAdosados == 0 ) {
+				shmctl ( this->shmId,IPC_RMID,NULL );
+			}
+		} else {
+			std::string mensaje = std::string("Error en shmdt(): ") + std::string(strerror(errno));
+			std::cerr << mensaje << std::endl;
+			Logger::debug(mensaje, me);
 		}
-	} else {
-		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
-		std::cerr << mensaje << std::endl;
-		Logger::error(mensaje, me);
 	}
 }
 
@@ -153,7 +155,7 @@ template <class T> ArrayCompartido<T>& ArrayCompartido<T>::operator= ( const Arr
 	void* tmpPtr = shmat ( this->shmId,NULL,0 );
 
 	if ( tmpPtr != (void*) -1 ) {
-		this->ptrDatos = static_cast<T**> (tmpPtr);
+		this->ptrDatos = static_cast<T*> (tmpPtr);
 	} else {
 		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 		Logger::error(mensaje, me);
@@ -164,11 +166,11 @@ template <class T> ArrayCompartido<T>& ArrayCompartido<T>::operator= ( const Arr
 }
 
 template <class T> void ArrayCompartido<T>::escribir ( const T& dato, const unsigned int id ) {
-	*(this->ptrDatos)[id] = dato;
+	this->ptrDatos[id] = id;
 }
 
 template <class T> T ArrayCompartido<T>::leer(const unsigned int id) const {
-	return (*(this->ptrDatos)[id]);
+	return (this->ptrDatos[id]);
 }
 
 template <class T> int ArrayCompartido<T>::cantidadProcesosAdosados () const {

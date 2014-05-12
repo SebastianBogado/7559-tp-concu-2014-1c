@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include "common.h"
 #include "comm/CajaRegistradora.h"
+#include "comm/Surtidores.h"
 
 int main(int argc, char* argv[]) {
 
@@ -29,10 +30,13 @@ int main(int argc, char* argv[]) {
 	logMsg << "Caja Registradora creada y lista para ser consultada";
 	Logger::debug(logMsg.str(), procName);
 
+	Logger::debug("Probando creacion de surtidores...", procName);
+	Surtidores surtidores(5);
+
 	int sleepTime = 0;
 	double monto = 0;
 	for(;;) {
-		sleepTime = rand() % 100;
+		sleepTime = rand() % 10;
 
 		logMsg.str("");logMsg.clear();
 		logMsg << "El administrador esperará " << sleepTime << " segundos para consultar la caja";
@@ -48,5 +52,6 @@ int main(int argc, char* argv[]) {
 	}
 
 	CajaRegistradora::destruirCaja();
+	Logger::destroy();
 	return 0;
 }

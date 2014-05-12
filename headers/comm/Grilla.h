@@ -27,6 +27,8 @@ protected:
 public:
 	Grilla(unsigned int cantEmpleados);
 	virtual ~Grilla();
+
+	void destruir();
 };
 
 #endif /* GRILLA_H_ */

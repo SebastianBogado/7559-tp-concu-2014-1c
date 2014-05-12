@@ -40,7 +40,7 @@ CajaRegistradora::CajaRegistradora() {
 }
 
 CajaRegistradora::~CajaRegistradora() {
-	_caja.liberar();
+	//_caja.liberar();
 	delete _sem;
 }
 
@@ -52,7 +52,7 @@ void CajaRegistradora::destruirCaja() {
 double CajaRegistradora::consultarMonto() const {
 	double monto;
 	_sem->p();
-	sleep(20);
+	sleep(3);
 	monto = _caja.leer();
 	_sem->v();
 	return monto;
