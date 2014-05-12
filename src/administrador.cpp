@@ -30,9 +30,6 @@ int main(int argc, char* argv[]) {
 	logMsg << "Caja Registradora creada y lista para ser consultada";
 	Logger::debug(logMsg.str(), procName);
 
-	Logger::debug("Probando creacion de surtidores...", procName);
-	Surtidores surtidores(5);
-
 	int sleepTime = 0;
 	double monto = 0;
 	for(;;) {
@@ -48,10 +45,10 @@ int main(int argc, char* argv[]) {
 		logMsg.str("");logMsg.clear();
 		logMsg << "En la caja hay actualmente " << monto << " pesos";
 		Logger::notice(logMsg.str(), procName);
-		break;
 	}
 
-	CajaRegistradora::destruirCaja();
+	// TODO: La caja se debe destruir en el proceso padre (el que la crea!)
+	//CajaRegistradora::destruirCaja();
 	Logger::destroy();
 	return 0;
 }
