@@ -71,9 +71,11 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Ret val para los fork
-	pid_t pid;
-	pid = fork();
-	if(pid == 0) {
+	pid_t pid, jefeEstacion_pid, administrador_pid;
+	
+	// Jefe estacion
+	jefeEstacion_pid = fork();
+	if(jefeEstacion_pid == 0) {
 		Logger::log("Creando proceso JefeEstacion", Logger::LOG_NOTICE, me);
 		// Creamos el nuevo proceso pasando el flag de debug, la cant de empleados y surtidores y un ID de proceso null
 		// que no se utiliza en este caso
@@ -81,6 +83,20 @@ int main(int argc, char* argv[]) {
 		argh.encode("jefeEstacion", parser.debugMode(), parser.cantEmpleados(), parser.cantSurtidores(), 0);
 		execv((dir + "jefeEstacion").c_str(), argh.getArgv());
 		Logger::log("Error creando el hijo JefeEstacion", Logger::LOG_CRITICAL, me);
+		Logger::destroy();
+		exit(1);
+	}
+
+	// Administrador
+	administrador_pid = fork();
+	if(administrador_pid == 0) {
+		Logger::log("Creando proceso Administrador", Logger::LOG_NOTICE, me);
+		// Creamos el nuevo proceso pasando el flag de debug, la cant de empleados y surtidores y un ID de proceso null
+		// que no se utiliza en este caso
+		ArgHelper argh;
+		argh.encode("administrador", parser.debugMode(), parser.cantEmpleados(), parser.cantSurtidores(), 0);
+		execv((dir + "administrador").c_str(), argh.getArgv());
+		Logger::log("Error creando el hijo administrador", Logger::LOG_CRITICAL, me);
 		Logger::destroy();
 		exit(1);
 	}
@@ -124,6 +140,11 @@ int main(int argc, char* argv[]) {
 				Logger::log(ss.str(), Logger::LOG_CRITICAL, me);
 				Logger::destroy();
 				exit(1);
+			}
+			// Chequeamos si termino el jefe de la estacion para avisarle al administrador via signal
+			if(done == jefeEstacion_pid) {
+				Logger::notice("proceso jefe estacion termino", me);
+				kill(administrador_pid, SIGINT);
 			}
 		}
 	}

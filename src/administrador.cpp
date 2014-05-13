@@ -11,48 +11,70 @@
 #include "common.h"
 #include "comm/CajaRegistradora.h"
 #include "comm/Surtidores.h"
+#include "signal/SignalHandler.h"
+#include "sighandlers/SH_administrador.h"
+#include "comm/ArgHelper.h"
 
 int main(int argc, char* argv[]) {
 
+	// Parsear los argumentos que nos manda el padre
+	bool debugMode;
+	int cantEmpleados, cantSurtidores, idEmpleado;
+	
+	if(!ArgHelper::decode(argc, argv, &debugMode, &cantEmpleados, &cantSurtidores, &idEmpleado)) {
+		std::cerr << "Error - invalid parameters passed to process " << argv[0] << std::endl;
+		exit(1);
+	}
+
+	// Init Logger
+	if(debugMode) {
+		Logger::initialize(logFile.c_str(), Logger::LOG_DEBUG);
+	}else{
+		Logger::initialize(logFile.c_str(), Logger::LOG_WARNING);
+	}
+
 	std::string procName = "Administrador";
 	std::ostringstream logMsg("Logger initialized...");
-
-	// TODO: Parser de los argumentos (ejemplo, ¿modo debug?)
-
-	Logger::initialize(logFile.c_str(), Logger::LOG_DEBUG);
 	Logger::notice(logMsg.str(),procName);
 
-	// TODO: Manejo de señales para que termine el proceso!
+	// Signal handlers
+	Administrador_SIGINT_Handler sigintHandler;
+	SignalHandler::getInstance()->registrarHandler(SIGINT, &sigintHandler);
+	
+	// Main loop
 	try {
 		CajaRegistradora caja;
 		caja.crearCaja();
 		
-		logMsg.str("");logMsg.clear();
+		logMsg.str("");
 		logMsg << "Caja Registradora creada y lista para ser consultada";
 		Logger::debug(logMsg.str(), procName);
 
 		int sleepTime = 0;
 		double monto = 0;
-		for(;;) {
+		while(!sigintHandler.gate()) {
 			sleepTime = rand() % 10;
-
-			logMsg.str("");logMsg.clear();
+			logMsg.str("");
 			logMsg << "El administrador esperará " << sleepTime << " segundos para consultar la caja";
 			Logger::debug(logMsg.str(), procName);
 
 			sleep(sleepTime);
-			monto = caja.consultarMonto();
+			if(!sigintHandler.gate()) {
+				sigintHandler.block();
+				monto = caja.consultarMonto();
 
-			logMsg.str("");logMsg.clear();
-			logMsg << "En la caja hay actualmente " << monto << " pesos";
-			Logger::notice(logMsg.str(), procName);
+				logMsg.str("");
+				logMsg << "En la caja hay actualmente " << monto << " pesos";
+				Logger::notice(logMsg.str(), procName);
+				sigintHandler.unblock();
+			}
 		}
 	}catch(std::string& err) {
 		Logger::error("Excepcion: " + err, procName);
 	}
 
-	// TODO: La caja se debe destruir en el proceso padre (el que la crea!)
-	//CajaRegistradora::destruirCaja();
+	SignalHandler::destruir();
+	Logger::debug("Fin del administrador", procName);
 	Logger::destroy();
 	return 0;
 }
