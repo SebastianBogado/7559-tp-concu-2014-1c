@@ -42,34 +42,41 @@ int main(int argc, const char* argv[]) {
 		return 2;
 	}
 
-	// Init Logger
-	const std::string me = __FILE__ ":main";
-	Logger::initialize(logFile.c_str(),Logger::LOG_DEBUG);
+	try {
 
-	Logger::debug("Init input", me);
+		// Init Logger
+		const std::string me = __FILE__ ":main";
+		Logger::initialize(logFile.c_str(),Logger::LOG_DEBUG);
 
-	// rand seed
-	std::srand(std::time(NULL));
+		Logger::debug("Init input", me);
 
-	// Setup del fifo
-	FifoEscritura canal(fifoInputJefe);
-	canal.abrir();
+		// rand seed
+		std::srand(std::time(NULL));
 
-	// Loop para generar
-	for(int current=0;current < cant_autos;current++) {
-		// sleep hasta que llega
-		const int sleep_interval = (rand() % (max_delay - min_delay)) + min_delay;
-		sleep(sleep_interval);
-		// escritura al fifo
-		canal.escribir(static_cast<const void*>(&current), sizeof(current));
-		// debug write
-		std::stringstream msg;
-		msg << current;
-		Logger::debug(std::string("Write al pipe: ") + msg.str(), me);
+		// Setup del fifo
+		FifoEscritura canal(fifoInputJefe);
+		canal.abrir();
+
+		// Loop para generar
+		for(int current=0;current < cant_autos;current++) {
+			// sleep hasta que llega
+			const int sleep_interval = (rand() % (max_delay - min_delay)) + min_delay;
+			sleep(sleep_interval);
+			// escritura al fifo
+			canal.escribir(static_cast<const void*>(&current), sizeof(current));
+			// debug write
+			std::stringstream msg;
+			msg << current;
+			Logger::debug(std::string("Write al pipe: ") + msg.str(), me);
+		}
+		
+		// Close del fifo y cleanup del archivo
+		canal.cerrar();
+
+	}catch(std::string& err) {
+		std::cerr << "Oops!: " << err << "\n";
+		return 1;
 	}
-	
-	// Close del fifo y cleanup del archivo
-	canal.cerrar();
 
 	return 0;
 }
