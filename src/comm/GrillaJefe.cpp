@@ -7,7 +7,7 @@
 
 #include "comm/GrillaJefe.h"
 
-GrillaJefe::GrillaJefe(unsigned int cantEmpleados) : Grilla(), _cantEmpleados(cantEmpleados) {
+GrillaJefe::GrillaJefe(unsigned int cantEmpleados) : Grilla(), _cantEmpleados(cantEmpleados), _lastEmpleado(0) {
 	me = __FILE__;
 }
 
@@ -84,15 +84,23 @@ void GrillaJefe::inicializarGrillaJefeEmpleados(unsigned int cantEmpleados) {
 	}
 }
 
-unsigned int GrillaJefe::getEmpleadoLibre() const {
+unsigned int GrillaJefe::getEmpleadoLibre() {
 	std::string me = this->me + ":getEmpleadoLibre";
+	unsigned int current = _lastEmpleado;
 	for(unsigned int i = 0; i < _cantEmpleados; i++) {
-		_sems[i].p();
-		unsigned int ocupado = _mem.leer(i);
-		Logger::debug("Se ha leido el estado " + toString(ocupado) + " del empleado " + toString(i), me);
-		_sems[i].v();
+		_sems[current].p();
+		unsigned int ocupado = _mem.leer(current);
+		Logger::debug("Se ha leido el estado " + toString(ocupado) + " del empleado " + toString(current), me);
+		_sems[current].v();
 		// 0 == Libre, 1 == Ocupado
-		if (!ocupado)	return i;
+		if (!ocupado)	{
+			_lastEmpleado = current;
+			return current;
+		}else{
+			// modulo _cantEmpleados increase
+			current++;
+			if(current == _cantEmpleados) current = 0;
+		}
 	}
 	// No encontro ningun empleado libre
 	return -1;

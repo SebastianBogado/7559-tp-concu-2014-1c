@@ -20,6 +20,7 @@ class GrillaJefe : public Grilla {
 private:
 	std::vector<FifoEscritura> _fifo;
 	unsigned int _cantEmpleados;
+	unsigned int _lastEmpleado; // Guarda el # de empleado del ultimo getEmpleadoLibre
 
 	void inicializarGrillaJefeEmpleados(unsigned int cantEmpleados);
 
@@ -33,7 +34,9 @@ public:
 	static void destruirGrillaJefe(unsigned int cantEmpleados);
 
 	// Devuelve el ID de algun emplado libre. Si no hay ninguno libre, devuelve -1
-	unsigned int getEmpleadoLibre() const;
+	// Se recorre linealmente en busqueda de un empleado libre
+	// Para hacer la asignacion mas fair, se mantiene un puntero interno al ultimo empleado, desde donde se comienza a buscar cada vez hasta recorrer todos los empleados
+	unsigned int getEmpleadoLibre();
 
 	// Metodo usado por el jefe para marcar la LookUpTable como empleado asignado
 	void asignarTrabajo(int idAuto, unsigned int idEmpleado);
