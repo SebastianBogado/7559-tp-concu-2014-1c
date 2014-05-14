@@ -5,12 +5,12 @@
 
 #include "signal/SignalHandler.h"
 
-class Administrador_SIGINT_Handler : public EventHandler {
+class SIGINT_Handler : public EventHandler {
 	private:
 	sig_atomic_t _quit;
 	
 	public:
-	Administrador_SIGINT_Handler();
+	SIGINT_Handler();
 	virtual int handleSignal(int signum);
 	sig_atomic_t gate() const;
 	

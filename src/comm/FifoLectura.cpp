@@ -1,4 +1,5 @@
 #include "comm/FifoLectura.h"
+#include <errno.h>
 
 FifoLectura::FifoLectura(const std::string nombre) : Fifo(nombre) {
 }
@@ -18,9 +19,13 @@ ssize_t FifoLectura::leer(void* buffer,const ssize_t buffsize) const {
 	ssize_t bytesLeidos = 0;
 	bytesLeidos = read ( fd,buffer,buffsize );
 
-	if (bytesLeidos == -1) {
-		std::string msg("Error leyendo del Fifo: Nombre = " + nombre + ". Errno = '" + std::string(strerror(errno)) + "'");
-		throw msg;
+	if(bytesLeidos < 0) {
+		if(errno == EINTR) {
+			return -2;
+		}else{
+			std::string msg("Error leyendo del Fifo: Nombre = " + nombre + ". Errno = '" + std::string(strerror(errno)) + "'");
+			throw msg;
+		}
 	}
 
 	return bytesLeidos;

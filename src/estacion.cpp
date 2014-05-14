@@ -19,7 +19,8 @@
 #include "parser/Parser.h"
 #include "common.h"
 #include "comm/ArgHelper.h"
-
+#include "signal/SignalHandler.h"
+#include "sighandlers/sigint.h"
 #include "comm/CajaRegistradora.h"
 #include "comm/GrillaJefe.h"
 #include "comm/Surtidores.h"
@@ -48,6 +49,10 @@ int main(int argc, char* argv[]) {
 	
 	Logger::debug("Se ha parseado la linea de comandos", me);
 
+	// Signal handlers
+	SIGINT_Handler sigintHandler;
+	SignalHandler::getInstance()->registrarHandler(SIGINT, &sigintHandler);
+	sigintHandler.block();
 	// TODO: Ordenar la creacion de este fifo. Encapsularlo porque queda feito
 	FifoEscritura fifoAutosJefe(fifoInputJefe);
 	
@@ -72,6 +77,7 @@ int main(int argc, char* argv[]) {
 
 	// Ret val para los fork
 	pid_t pid, jefeEstacion_pid, administrador_pid;
+	std::vector<pid_t> empleado_pid;
 	
 	// Jefe estacion
 	jefeEstacion_pid = fork();
@@ -118,6 +124,8 @@ int main(int argc, char* argv[]) {
 			Logger::log(ss.str(), Logger::LOG_CRITICAL, me);
 			Logger::destroy();
 			exit(1);
+		}else{
+			empleado_pid.push_back(pid);
 		}
 	}
 
@@ -126,17 +134,27 @@ int main(int argc, char* argv[]) {
 	Logger::debug("Waiting on children", me);
 	for(;;) {
 		int status;
+		sigintHandler.unblock();
 		pid_t done = waitpid(-1, &status, 0);
+		sigintHandler.block();
 		if(done == -1) {
-			if (errno == ECHILD) {
+			if(errno == ECHILD){
 				break; // no more child processes
+			}else if(errno == EINTR) {
+				std::cerr << "-----------------INTERRUPTED!\n";
+				kill(administrador_pid, SIGTERM);
+				kill(jefeEstacion_pid, SIGTERM);
+				for(size_t i = 0;i < empleado_pid.size();i++) {
+					kill(empleado_pid[i], SIGTERM);
+				}
+				break;
 			}else{
 				std::cerr << "wtf?\n";
 			}
 		}else{
 			if(!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
 				std::stringstream ss;
-				ss << "Proceso con pid  " << done << " fallo";
+				ss << "Proceso con pid  " << done << " died abnormally";
 				Logger::log(ss.str(), Logger::LOG_CRITICAL, me);
 				Logger::destroy();
 				exit(1);

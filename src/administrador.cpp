@@ -12,7 +12,7 @@
 #include "comm/CajaRegistradora.h"
 #include "comm/Surtidores.h"
 #include "signal/SignalHandler.h"
-#include "sighandlers/SH_administrador.h"
+#include "sighandlers/sigint.h"
 #include "comm/ArgHelper.h"
 
 int main(int argc, char* argv[]) {
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 	Logger::notice(logMsg.str(),procName);
 
 	// Signal handlers
-	Administrador_SIGINT_Handler sigintHandler;
+	SIGINT_Handler sigintHandler;
 	SignalHandler::getInstance()->registrarHandler(SIGINT, &sigintHandler);
 	
 	// Main loop

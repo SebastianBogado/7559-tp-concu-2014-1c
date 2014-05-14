@@ -57,8 +57,11 @@ int main(int argc, char* argv[]) {
 		if(bytes == 0) {
 				Logger::debug("Sali del input loop por EOF", me);
 				leyendo = false;
-		}else if(bytes < 0) {
+		}else if(bytes == -1) {
 				Logger::debug("Sali del input loop por error de lectura", me);
+				leyendo = false;
+		}else if(bytes == -2) {
+				Logger::debug("Sali del input loop for interrupcion", me);
 				leyendo = false;
 		}else{
 			int received_auto_id = static_cast<int>(*buffer);
