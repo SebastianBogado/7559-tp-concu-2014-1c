@@ -44,7 +44,13 @@ int main(int argc, char* argv[]) {
 	// Main loop
 	try {
 		CajaRegistradora caja;
-		caja.crearCaja();
+		try {
+			caja.crearCaja();
+		} catch(std::string& msg) {
+			std::string _msg("Error en la creacion de la caja registradora");
+			Logger::error(_msg, procName);
+			exit(1);
+		}
 		
 		logMsg.str("");
 		logMsg << "Caja Registradora creada y lista para ser consultada";
@@ -65,7 +71,7 @@ int main(int argc, char* argv[]) {
 
 				logMsg.str("");
 				logMsg << "En la caja hay actualmente " << monto << " pesos";
-				Logger::notice(logMsg.str(), procName);
+				Logger::error(logMsg.str(), procName);
 				sigintHandler.unblock();
 			}
 		}
