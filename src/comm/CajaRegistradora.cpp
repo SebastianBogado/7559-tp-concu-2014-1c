@@ -97,10 +97,11 @@ double CajaRegistradora::consultarMonto() const {
 }
 
 void CajaRegistradora::depositar(const double monto) {
+	std::string me = this->me + ":depositar";
 	_sem.p();
 	double montoActual = _caja.leer();
 	_caja.escribir(montoActual + monto);
 	montoActual = _caja.leer();
-	Logger::notice(std::string("La caja ahora contiene ") + toString(montoActual));
+	Logger::notice(std::string("La caja ahora contiene ") + toString(montoActual), me);
 	_sem.v();
 }

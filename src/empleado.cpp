@@ -85,8 +85,6 @@ int main(int argc, char* argv[]) {
 
 	while(trabajando) {
 		Logger::debug("Entro a la cola de empleados libres", me);
-		// Me encolo en una cola que no sé dónde está (bloq)
-		Logger::debug("Soy el próximo en la cola, el próximo auto me toca a mí", me);
 		// Leo 4 bytes del fifo del jefe (bloq)
 		idAuto = grillaEmpleado.esperarTrabajo(idEmpleado);
 		// Detectamos el fin de la estacion con un -1 como id de auto

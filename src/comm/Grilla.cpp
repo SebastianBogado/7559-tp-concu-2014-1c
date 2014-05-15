@@ -42,7 +42,7 @@ void Grilla::crearGrilla(unsigned int cantEmpleados) {
 
 		_sems.push_back(tmpSem);
 		filename.clear();
-		Logger::debug(std::string("Se ha creado el semaforo para el empleado ") + toString(i));
+		Logger::debug(std::string("Se ha creado el semaforo para el empleado ") + toString(i), me);
 	}
 
 	Logger::notice("Creada la grilla Jefe<->Empleados correctamente", me);

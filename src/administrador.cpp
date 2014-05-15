@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 		Logger::initialize(logFile.c_str(), Logger::LOG_WARNING);
 	}
 
-	std::string procName = "Administrador";
+	std::string procName = __FILE__":main";
 	std::ostringstream logMsg("Logger initialized...");
 	Logger::notice(logMsg.str(),procName);
 
