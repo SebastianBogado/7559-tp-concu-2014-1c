@@ -1,12 +1,12 @@
 /*
- * ArrayCompartido.h
+ * ArrayCompartido.hpp
  *
  *  Created on: May 6, 2014
  *      Author: ferno
  */
 
-#ifndef ARRAYCOMPARTIDO_H_
-#define ARRAYCOMPARTIDO_H_
+#ifndef ARRAYCOMPARTIDO_HPP_
+#define ARRAYCOMPARTIDO_HPP_
 
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -178,4 +178,4 @@ template <class T> unsigned int ArrayCompartido<T>::size() const {
 	return _size;
 }
 
-#endif /* ARRAYCOMPARTIDO_H_ */
+#endif /* ARRAYCOMPARTIDO_HPP_ */

@@ -8,7 +8,7 @@
 #ifndef CAJAREGISTRADORA_H_
 #define CAJAREGISTRADORA_H_
 
-#include "comm/MemoriaCompartida.h"
+#include "comm/MemoriaCompartida.hpp"
 #include "sync/Semaforo.h"
 #include <vector>
 #include <cstdlib>

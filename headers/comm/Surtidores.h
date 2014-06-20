@@ -13,7 +13,7 @@
 #define SURTIDORES_H_
 
 #include "sync/Semaforo.h"
-#include "comm/ArrayCompartido.h"
+#include "comm/ArrayCompartido.hpp"
 #include <vector>
 #include <cstdlib>
 #include "common.h"
