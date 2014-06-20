@@ -47,7 +47,6 @@ int main(int argc, char* argv[]) {
 			"# empleados: " + toString(cantEmpleados) + ", "
 			"# surtidores: " + toString(cantSurtidores), me);
 
-	// Get shmem sólo con cantEmpleados según Fer
 
 	CajaRegistradora cajaRegistradora;
 	try {
