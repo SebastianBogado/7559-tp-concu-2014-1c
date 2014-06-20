@@ -14,7 +14,7 @@
 
 #include <vector>
 #include <cstdlib>
-#include "comm/ArrayCompartido.h"
+#include "comm/ArrayCompartido.hpp"
 #include "sync/Semaforo.h"
 #include "logger/Logger.h"
 #include "common.h"
