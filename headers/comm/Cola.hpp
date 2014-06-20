@@ -23,7 +23,7 @@ template <class T> class Cola {
 		int destruir () const;
 };
 
-template <class T> Cola<T> :: Cola ( const std::string& archivo,const char letra ) {
+template <class T> Cola<T> :: Cola ( const std::string& archivo,const char letra ): me(__FILE__) {
 	std::string me = this->me + ":Cola";
 	this->clave = ftok ( archivo.c_str(),letra );
 	if ( this->clave == -1 ) {
