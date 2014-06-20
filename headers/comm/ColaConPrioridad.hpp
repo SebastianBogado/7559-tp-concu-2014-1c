@@ -1,0 +1,6 @@
+#ifndef COLA_CON_PRIORIDAD_HPP_
+#define COLA_CON_PRIORIDAD_HPP_
+
+// Code lol
+
+#endif /* COLA_CON_PRIORIDAD_HPP_ */
