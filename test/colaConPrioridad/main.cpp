@@ -1,5 +1,3 @@
-#ifdef EJEMPLO_2
-
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
@@ -88,6 +86,4 @@ int main () {
 		return 0;
 	}
 }
-
-#endif
 

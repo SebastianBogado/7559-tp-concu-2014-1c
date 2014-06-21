@@ -1,12 +1,15 @@
 CC=g++
 CFLAGS=-Wall -pedantic -pedantic-errors -g -ggdb -DDEBUG
 ROOT=../../
-HEADER_DIR=$(ROOT)headers
+HEADER_DIR=$(ROOT)headers/
+SRC_DIR=$(ROOT)src/
+LOGGER=$(SRC_DIR)logger/Logger.cpp
+LOCK=$(SRC_DIR)sync/LockFile.cpp
 
-SHARED_SOURCES := $(shell find ../../src/*/ -name '*.cpp')
+SHARED_SOURCES= $(LOGGER) $(LOCK)
 SHARED_OBJ=$(SHARED_SOURCES:.cpp=.o)
 
-TEST_SOURCES=Cliente.cpp Servidor.cpp
+TEST_SOURCES=Cliente.cpp Servidor.cpp main.cpp
 TEST_OBJ=$(TEST_SOURCES:.cpp=.o)
 TEST_BIN=test
 
