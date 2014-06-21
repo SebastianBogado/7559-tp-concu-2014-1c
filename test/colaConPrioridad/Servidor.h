@@ -7,6 +7,9 @@
 
 #include "Mensajes.h"
 #include "comm/Cola.hpp"
+#include "logger/Logger.h"
+#include "common.h"
+
 
 class Servidor {
 

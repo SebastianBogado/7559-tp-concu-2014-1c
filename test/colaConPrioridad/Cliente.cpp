@@ -5,7 +5,7 @@ Cliente :: Cliente ( const std::string& archivo,const char letra ) {
 }
 
 Cliente :: ~Cliente() {
-	this->cola->destruir ();
+//	this->cola->destruir ();
 	delete this->cola;
 }
 

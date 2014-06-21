@@ -5,6 +5,7 @@ Servidor :: Servidor ( const std::string& archivo,const char letra ) {
 }
 
 Servidor :: ~Servidor () {
+	this->cola->destruir ();
 	delete this->cola;
 }
 

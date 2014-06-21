@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 
+#include "common.h"
 #include "Cliente.h"
 #include "Servidor.h"
 #include "Mensajes.h"
@@ -19,17 +20,57 @@ using namespace std;
 int main () {
 
 	static const int CANTIDAD_INTERCAMBIOS = 3;
+	Logger::initialize(__FILE__".log", Logger::LOG_DEBUG);
 
 	int processId = fork ();
 
 	if ( processId == 0 ) {
+		// cliente con prioridad
+
+		sleep(1);
+		Cliente clienteConPrioridad ( __FILE__,'a' );
+
+		for ( int i=0;i<CANTIDAD_INTERCAMBIOS;i++ ) {
+
+			// se arma el texto del mensaje
+			std::stringstream peticion;
+			peticion << "Peticion " << (i+1) << " del cliente con prioridad";
+
+			// se envia el mensaje al servidor
+			mensaje rta = clienteConPrioridad.enviarPeticionImportante ( i+1,peticion.str() );
+			cout << "Cliente con prioridad: respuesta recibida = (ID = " << rta.id << ") - " << rta.texto << endl;
+		}
+
+
+		return 0;
+
+	} else {
 
 		int processId2 = fork ();
 
 		if ( processId2 == 0 ) {
-			// servidor
-			Servidor servidor ( "main2.cc",'a' );
+			// cliente
+			Cliente cliente ( __FILE__,'a' );
 
+			for ( int i=0;i<CANTIDAD_INTERCAMBIOS;i++ ) {
+
+				// se arma el texto del mensaje
+				std::stringstream peticion;
+				peticion << "Peticion " << (i+1) << " del cliente";
+
+				// se envia el mensaje al servidor
+				mensaje rta = cliente.enviarPeticion ( i+1,peticion.str() );
+				cout << "Cliente: respuesta recibida = (ID = " << rta.id << ") - " << rta.texto << endl;
+			}
+
+
+			return 0;
+
+		} else {
+			// servidor
+
+			sleep(3);
+			Servidor servidor ( __FILE__,'a' );
 			for ( int i=0;i<CANTIDAD_INTERCAMBIOS*2;i++ ) {
 				cout << "Servidor: esperando peticiones" << endl;
 				servidor.recibirPeticion ();
@@ -43,47 +84,7 @@ int main () {
 			wait ( NULL );
 
 			return 0;
-		} else {
-
-		// cliente con prioridad
-		Cliente clienteConPrioridad ( "main2.cc",'a' );
-
-		for ( int i=0;i<CANTIDAD_INTERCAMBIOS;i++ ) {
-			cin.get ();
-
-			// se arma el texto del mensaje
-			std::stringstream peticion;
-			peticion << "Peticion " << (i+1) << " del cliente con prioridad";
-
-			// se envia el mensaje al servidor
-			mensaje rta = clienteConPrioridad.enviarPeticionImportante ( i+1,peticion.str() );
-			cout << "Cliente: respuesta recibida = (ID = " << rta.id << ") - " << rta.texto << endl;
 		}
-
-
-		return 0;
-
-		}
-
-	} else {
-
-		// cliente
-		Cliente cliente ( "main2.cc",'a' );
-
-		for ( int i=0;i<CANTIDAD_INTERCAMBIOS;i++ ) {
-			cin.get ();
-
-			// se arma el texto del mensaje
-			std::stringstream peticion;
-			peticion << "Peticion " << (i+1) << " del cliente";
-
-			// se envia el mensaje al servidor
-			mensaje rta = cliente.enviarPeticion ( i+1,peticion.str() );
-			cout << "Cliente: respuesta recibida = (ID = " << rta.id << ") - " << rta.texto << endl;
-		}
-
-
-		return 0;
 	}
 }
 
