@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+#include <ctime>
 
 #include "common.h"
 #include "Cliente.h"
@@ -22,6 +23,7 @@ int main () {
 	static const int CANTIDAD_INTERCAMBIOS = 3;
 	Logger::initialize(__FILE__".log", Logger::LOG_DEBUG);
 
+	srand(time(NULL));
 	int processId = fork ();
 
 	if ( processId == 0 ) {
@@ -37,8 +39,10 @@ int main () {
 			peticion << "Peticion " << (i+1) << " del cliente con prioridad";
 
 			// se envia el mensaje al servidor
+			cout << "Cliente con prioridad: enviando peticion" << endl;
 			mensaje rta = clienteConPrioridad.enviarPeticionImportante ( i+1,peticion.str() );
 			cout << "Cliente con prioridad: respuesta recibida = (ID = " << rta.id << ") - " << rta.texto << endl;
+			sleep(rand() % 4);
 		}
 
 
@@ -59,10 +63,11 @@ int main () {
 				peticion << "Peticion " << (i+1) << " del cliente";
 
 				// se envia el mensaje al servidor
+				cout << "Cliente: enviando peticion" << endl;
 				mensaje rta = cliente.enviarPeticion ( i+1,peticion.str() );
 				cout << "Cliente: respuesta recibida = (ID = " << rta.id << ") - " << rta.texto << endl;
 			}
-
+			sleep(rand() % 4);
 
 			return 0;
 
@@ -79,6 +84,7 @@ int main () {
 				cout << "Servidor: peticion procesada - enviando respuesta: " << servidor.getRespuesta().texto << endl;
 				servidor.responderPeticion ();
 				cout << "Servidor: respuesta enviada" << endl << endl;
+				sleep(1);
 			}
 			wait ( NULL );
 			wait ( NULL );

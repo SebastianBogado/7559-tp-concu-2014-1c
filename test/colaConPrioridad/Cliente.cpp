@@ -28,12 +28,12 @@ mensaje Cliente :: enviarPeticionImportante ( const int id,const std::string& te
 	mensaje peticion;
 	mensaje respuesta;
 
-	peticion.mtype = PETICION;
+	peticion.mtype = PETICION_IMPORTANTE;
 	peticion.id = id;
 	strcpy ( peticion.texto,texto.c_str() );
 
 	this->cola->escribir ( peticion );
-	this->cola->leer ( RESPUESTA,&respuesta );
+	this->cola->leer ( RESPUESTA_IMPORTANTE,&respuesta );
 
 	return respuesta;
 }

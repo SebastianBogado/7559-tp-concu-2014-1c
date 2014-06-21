@@ -11,7 +11,7 @@ Servidor :: ~Servidor () {
 
 int Servidor :: recibirPeticion () {
 	this->peticionRecibida.id = 0;
-	this->cola->leer ( PETICION,&(this->peticionRecibida) );
+	this->cola->leer ( -PETICION,&(this->peticionRecibida) );
 	return 0;
 }
 
@@ -19,7 +19,7 @@ int Servidor :: procesarPeticion () {
 	std::stringstream textoRta;
 	textoRta << "[Respuesta a " << this->peticionRecibida.texto << "]";
 
-	this->respuesta.mtype = RESPUESTA;
+	this->respuesta.mtype = SET_RESPUESTA(peticionRecibida.mtype);
 	this->respuesta.id = this->peticionRecibida.id;
 	strcpy ( this->respuesta.texto,textoRta.str().c_str() );
 
