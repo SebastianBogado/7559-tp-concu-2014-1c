@@ -13,10 +13,11 @@
 using namespace std;
 
 
-/* El cliente 2, que manda mensajes con mayor prioridad, se conecta 1 segundo
- * para asegurar que manda sus mensajes después.
- * El servidor se conecta 3 segundos después, para asegurar que al menos haya
- * un mensaje con prioridad y otro sin.
+/* El cliente se conecta y manda 3 mensajes, uno con prioridad, otro con mayor
+ * prioridad y 3 mensajes normales más .
+ * El servidor se conecta 3 segundos después y debe leer primero el más
+ * importante, después el segundo importante, y finalmente el resto de los mensajes
+ * normales.
  */
 int main () {
 
@@ -27,70 +28,50 @@ int main () {
 	int processId = fork ();
 
 	if ( processId == 0 ) {
-		// cliente con prioridad
-
-		sleep(1);
-		Cliente clienteConPrioridad ( __FILE__,'a' );
-
-		for ( int i=0;i<CANTIDAD_INTERCAMBIOS;i++ ) {
-
-			// se arma el texto del mensaje
-			std::stringstream peticion;
-			peticion << "Peticion " << (i+1) << " del cliente con prioridad";
-
+		// cliente
+		Cliente cliente( __FILE__,'a' );
+		int i=0, id;
+		for ( ;i<CANTIDAD_INTERCAMBIOS;i++ ) {
+			id = i + 1;
 			// se envia el mensaje al servidor
-			cout << "Cliente con prioridad: enviando peticion" << endl;
-			mensaje rta = clienteConPrioridad.enviarPeticionImportante ( i+1,peticion.str() );
-			cout << "Cliente con prioridad: respuesta recibida = (ID = " << rta.id << ") - " << rta.texto << endl;
-			sleep(rand() % 4);
+			cout << "Cliente: enviando mensaje" << endl;
+			cliente.enviarPeticion( id, "Mensaje " + toString(id) + " del cliente");
+		}
+		id = ++i;
+		// se envia el mensaje al servidor
+		cout << "Cliente: enviando mensaje importante " << endl;
+		cliente.enviarPeticionImportante( id, "Mensaje importante " + toString(id) + " del cliente");
+
+		id = ++i;
+		// se envia el mensaje al servidor
+		cout << "Cliente: enviando mensaje súper importante " << endl;
+		cliente.enviarPeticionSuperImportante( id, "Mensaje súper importante " + toString(id) + " del cliente");
+
+
+		for ( int j=i;j<CANTIDAD_INTERCAMBIOS+i;j++ ) {
+			id = j + 1;
+			// se envia el mensaje al servidor
+			cout << "Cliente: enviando mensaje" << endl;
+			cliente.enviarPeticion( id, "Mensaje " + toString(id) + " del cliente");
 		}
 
 
 		return 0;
 
+
 	} else {
+		// servidor
 
-		int processId2 = fork ();
-
-		if ( processId2 == 0 ) {
-			// cliente
-			Cliente cliente ( __FILE__,'a' );
-
-			for ( int i=0;i<CANTIDAD_INTERCAMBIOS;i++ ) {
-
-				// se arma el texto del mensaje
-				std::stringstream peticion;
-				peticion << "Peticion " << (i+1) << " del cliente";
-
-				// se envia el mensaje al servidor
-				cout << "Cliente: enviando peticion" << endl;
-				mensaje rta = cliente.enviarPeticion ( i+1,peticion.str() );
-				cout << "Cliente: respuesta recibida = (ID = " << rta.id << ") - " << rta.texto << endl;
-			}
-			sleep(rand() % 4);
-
-			return 0;
-
-		} else {
-			// servidor
-
-			sleep(3);
-			Servidor servidor ( __FILE__,'a' );
-			for ( int i=0;i<CANTIDAD_INTERCAMBIOS*2;i++ ) {
-				cout << "Servidor: esperando peticiones" << endl;
-				servidor.recibirPeticion ();
-				cout << "Servidor: peticion recibida: " << servidor.getPeticionRecibida().texto << endl;
-				servidor.procesarPeticion ();
-				cout << "Servidor: peticion procesada - enviando respuesta: " << servidor.getRespuesta().texto << endl;
-				servidor.responderPeticion ();
-				cout << "Servidor: respuesta enviada" << endl << endl;
-				sleep(1);
-			}
-			wait ( NULL );
-			wait ( NULL );
-
-			return 0;
+		sleep(3);
+		Servidor servidor ( __FILE__,'a' );
+		for ( int i=0;i<CANTIDAD_INTERCAMBIOS*2 + 2;i++ ) {
+			cout << "Servidor: esperando mensajes" << endl;
+			mensaje peticion = servidor.recibirPeticion ();
+			cout << "Servidor: mensaje recibido: " << peticion.texto << endl;
 		}
+		wait ( NULL );
+
+		return 0;
 	}
 }
 

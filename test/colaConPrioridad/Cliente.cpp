@@ -1,39 +1,38 @@
 #include "Cliente.h"
 
 Cliente :: Cliente ( const std::string& archivo,const char letra ) {
-	this->cola = new Cola<mensaje> ( archivo,letra );
+	cola = new ColaConPrioridad<mensaje> ( archivo,letra );
 }
 
 Cliente :: ~Cliente() {
-//	this->cola->destruir ();
-	delete this->cola;
+	delete cola;
 }
 
-mensaje Cliente :: enviarPeticion ( const int id,const std::string& texto ) const {
+void Cliente :: enviarPeticion ( const int id,const std::string& texto ) const {
 	mensaje peticion;
-	mensaje respuesta;
 
-	peticion.mtype = PETICION;
 	peticion.id = id;
 	strcpy ( peticion.texto,texto.c_str() );
 
-	this->cola->escribir ( peticion );
-	this->cola->leer ( RESPUESTA,&respuesta );
-
-	return respuesta;
+	cola->escribir ( peticion );
 }
 
 
-mensaje Cliente :: enviarPeticionImportante ( const int id,const std::string& texto ) const {
+void Cliente :: enviarPeticionImportante ( const int id,const std::string& texto ) const {
 	mensaje peticion;
-	mensaje respuesta;
 
-	peticion.mtype = PETICION_IMPORTANTE;
 	peticion.id = id;
 	strcpy ( peticion.texto,texto.c_str() );
 
-	this->cola->escribir ( peticion );
-	this->cola->leer ( RESPUESTA_IMPORTANTE,&respuesta );
+	cola->escribir ( peticion, 1 );
+}
 
-	return respuesta;
+
+void Cliente :: enviarPeticionSuperImportante ( const int id,const std::string& texto ) const {
+	mensaje peticion;
+
+	peticion.id = id;
+	strcpy ( peticion.texto,texto.c_str() );
+
+	cola->escribir ( peticion, 2 );
 }
