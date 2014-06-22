@@ -21,8 +21,9 @@ const std::string shmemCaja = "/tmp/shmemCaja";
 // Archivo para el semaforo de la shmem de la caja
 const std::string semCaja = "/tmp/semCaja";
 
-// Archivo para el pipe fifo entre input<->jefeEstacion
-const std::string fifoInputJefe = "/tmp/fifoInputJefe";
+// Archivo para la cola entre input<->jefeEstacion
+const std::string colaInputJefe = "/tmp/colaInputJefe";
+const char colaInputJefeKey = 'z';
 
 // Archivo para la memoria compartida de la grilla
 const std::string shmemGrilla = "/tmp/grillaEmpleados";
@@ -46,5 +47,12 @@ template<typename T> std::string toString(const T& elem) {
 
 	return res;
 }
+
+typedef struct automovil {
+	int id;
+	bool esVip;
+} automovil;
+
+const automovil automovilFinal = { -1, true };
 
 #endif

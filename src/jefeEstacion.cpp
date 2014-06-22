@@ -4,7 +4,7 @@
 
 #include "common.h"
 #include "logger/Logger.h"
-#include "comm/FifoLectura.h"
+#include "comm/ColaConPrioridad.hpp"
 #include "parser/Parser.h"
 #include "comm/ArgHelper.h"
 #include "comm/GrillaJefe.h"
@@ -46,41 +46,37 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
-	// Setup del pipe de input
-	FifoLectura canal(fifoInputJefe);
-	const int buffer_size = sizeof(int);
-	char buffer[buffer_size];
-	canal.abrir();
+	// Setup de la cola de input
+	ColaConPrioridad<automovil> colaAutosJefe = ColaConPrioridad<automovil>( colaInputJefe, colaInputJefeKey );
 	bool leyendo = true;
 	while(leyendo) {
-		ssize_t bytes = canal.leer(static_cast<void*>(buffer), buffer_size);
-		if(bytes == 0) {
+		automovil automovil = colaAutosJefe.leer();
+		if (automovil.id == automovilFinal.id) {
 				Logger::debug("Sali del input loop por EOF", me);
 				leyendo = false;
-		}else if(bytes == -1) {
-				Logger::debug("Sali del input loop por error de lectura", me);
-				leyendo = false;
-		}else if(bytes == -2) {
-				Logger::debug("Sali del input loop for interrupcion", me);
-				leyendo = false;
-		}else{
-			int received_auto_id = static_cast<int>(*buffer);
+//		}else if(bytes == -1) {
+//				Logger::debug("Sali del input loop por error de lectura", me);
+//				leyendo = false;
+//		}else if(bytes == -2) {
+//				Logger::debug("Sali del input loop for interrupcion", me);
+//				leyendo = false;
+		} else {
 			std::stringstream ss;
-			ss << "Leí del fifo: " << received_auto_id;
+			ss << "Leí del fifo: " << automovil.id;
+			if (automovil.esVip) ss << " (VIP)";
 			Logger::debug(ss.str(), me);
 			int for_empleado_id = grillaJefe.getEmpleadoLibre();
 			if(for_empleado_id == -1) {
 				Logger::debug("No hay empleados disponibles para este auto", me);
 			}else{
-				grillaJefe.asignarTrabajo(received_auto_id, for_empleado_id);
+				grillaJefe.asignarTrabajo(automovil.id, for_empleado_id);
 				ss.str("");
-				ss << "Se asigno el auto " << received_auto_id << " al empleado " << for_empleado_id;
+				ss << "Se asigno el auto " << automovil.id + (automovil.esVip ? " (VIP)" : "") << " al empleado " << for_empleado_id;
 				Logger::debug(ss.str(), me);
 			}
 		}
 	}
 	
 	grillaJefe.avisarTerminarTrabajo(cantEmpleados);
-	canal.cerrar();
-	
+
 }

@@ -5,7 +5,7 @@
 #include <sys/msg.h>
 #include <sys/ipc.h>
 #include <stdio.h>
-#include <string>
+#include <cstring>
 #include <errno.h>
 #include "logger/Logger.h"
 
@@ -17,12 +17,21 @@ template <class T> class Cola {
 
 
 	public:
+		Cola ( );
+		Cola ( const Cola<T>& otraCola );
 		Cola ( const std::string& archivo,const char letra );
 		~Cola();
 		int escribir ( const T& dato ) const;
 		int leer ( const int tipo,T* buffer ) const;
 		int destruir () const;
 };
+
+template <class T> Cola<T> :: Cola ( ): me(__FILE__) {}
+
+template <class T> Cola<T> :: Cola ( const Cola<T>& otraCola ): me(__FILE__) {
+	clave = otraCola.clave;
+	id = otraCola.id;
+}
 
 template <class T> Cola<T> :: Cola ( const std::string& archivo,const char letra ): me(__FILE__) {
 	std::string me = this->me + ":Cola";

@@ -17,12 +17,21 @@ template <class T> class ColaConPrioridad {
 		std::string me;  // Debugging purposes
 
 	public:
+		ColaConPrioridad ( );
+		ColaConPrioridad ( const ColaConPrioridad<T>& otraCola );
 		ColaConPrioridad ( const std::string& archivo,const char letra );
 		~ColaConPrioridad();
 		void escribir ( const T& dato, const long prioridad = 0 ) const;
 		T leer () const;
 		void destruir () const;
 };
+
+
+
+template <class T> ColaConPrioridad<T> :: ColaConPrioridad ( ): me(__FILE__) {}
+
+template <class T> ColaConPrioridad<T> :: ColaConPrioridad ( const ColaConPrioridad<T>& otraCola )
+	: cola(otraCola.cola), me(__FILE__) {}
 
 template <class T> ColaConPrioridad<T> :: ColaConPrioridad ( const std::string& archivo,const char letra )
 	: cola(archivo, letra), me(__FILE__) {}

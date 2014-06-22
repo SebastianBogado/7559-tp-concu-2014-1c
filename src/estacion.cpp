@@ -24,9 +24,11 @@
 #include "comm/CajaRegistradora.h"
 #include "comm/GrillaJefe.h"
 #include "comm/Surtidores.h"
-#include "comm/Fifo.h"
+#include "comm/ColaConPrioridad.hpp"
 
-void inicializarSharedObjects(CajaRegistradora& caja, Grilla& grilla, GrillaJefe& grillaJefe, Surtidores& surtidores, unsigned int cantEmpleados, unsigned int cantSurtidores);
+void inicializarSharedObjects(CajaRegistradora& caja, Grilla& grilla, GrillaJefe& grillaJefe, Surtidores& surtidores,
+		unsigned int cantEmpleados, unsigned int cantSurtidores,
+		std::ofstream& archivoColaInputJefe, ColaConPrioridad<automovil>& colaAutosJefe);
 
 int main(int argc, char* argv[]) {
 	const std::string me = __FILE__ ":main";
@@ -53,27 +55,22 @@ int main(int argc, char* argv[]) {
 	SIGINT_Handler sigintHandler;
 	SignalHandler::getInstance()->registrarHandler(SIGINT, &sigintHandler);
 	sigintHandler.block();
-	// TODO: Ordenar la creacion de este fifo. Encapsularlo porque queda feito
-	FifoEscritura fifoAutosJefe(fifoInputJefe);
-	
-	try {
-		fifoAutosJefe.crear();
-	} catch(std::string& msg) {
-		Logger::error("Error en al creacion del fifo entre input y jefe: " + msg, me);
-		exit(1);
-	}
-	
+
 	CajaRegistradora caja;
 	Grilla grilla;
 	GrillaJefe grillaJefe(parser.cantEmpleados());
 	Surtidores surtidores;
+	std::ofstream archivoColaInputJefe(colaInputJefe.c_str());
+	ColaConPrioridad<automovil> colaAutosJefe;
+
 
 	try {
-		inicializarSharedObjects(caja, grilla, grillaJefe, surtidores, parser.cantEmpleados(), parser.cantSurtidores());
+		inicializarSharedObjects(caja, grilla, grillaJefe, surtidores, parser.cantEmpleados(), parser.cantSurtidores(), archivoColaInputJefe, colaAutosJefe);
 	} catch(std::string& msg) {
 		Logger::error("Error en la inicializacion de objetos compartidos: " + msg, me);
 		exit(1);
 	}
+
 
 	// Ret val para los fork
 	pid_t pid, jefeEstacion_pid, administrador_pid;
@@ -170,7 +167,7 @@ int main(int argc, char* argv[]) {
 	Logger::debug("All children done", me);
 	
 	try {
-		fifoAutosJefe.eliminar();
+		colaAutosJefe.destruir();
 		caja.destruirCaja();
 		Logger::debug("La caja registradora se ha destruido por completo", me);
 		grilla.destruir(parser.cantEmpleados());
@@ -189,9 +186,20 @@ int main(int argc, char* argv[]) {
 }
 
 void inicializarSharedObjects(CajaRegistradora& caja, Grilla& grilla, GrillaJefe& grillaJefe, Surtidores& surtidores,
-		unsigned int cantEmpleados, unsigned int cantSurtidores) {
+		unsigned int cantEmpleados, unsigned int cantSurtidores,
+		std::ofstream& archivoColaInputJefe, ColaConPrioridad<automovil>& colaAutosJefe) {
 	caja.inicializarCaja();
 	grilla.inicializarGrilla(cantEmpleados);
 	grillaJefe.inicializarGrillaJefe();
 	surtidores.inicializarSurtidores(cantSurtidores);
+
+	if (archivoColaInputJefe.fail() || archivoColaInputJefe.bad()) {
+		std::string me = __FILE__ ":inicializarSharedObjects";
+		std::string _msg = std::string("Error creando archivo para la cola entre el jefe y el input: ") + std::string(strerror(errno));
+		Logger::error(_msg, me);
+		throw _msg;
+	}
+	// TODO: Ordenar la creacion de esta cola. Encapsularlo porque queda feito
+	colaAutosJefe = ColaConPrioridad<automovil> ( colaInputJefe, colaInputJefeKey );
+
 }
