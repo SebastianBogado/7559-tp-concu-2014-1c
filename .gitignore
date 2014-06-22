@@ -26,3 +26,6 @@
 # IDE files
 .cproject
 .project
+.idea
+*.iml
+

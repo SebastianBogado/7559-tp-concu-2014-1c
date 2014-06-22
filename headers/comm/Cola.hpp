@@ -6,6 +6,7 @@
 #include <sys/ipc.h>
 #include <stdio.h>
 #include <string>
+#include <errno.h>
 #include "logger/Logger.h"
 
 template <class T> class Cola {
