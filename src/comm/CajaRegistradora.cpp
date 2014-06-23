@@ -24,12 +24,20 @@ void CajaRegistradora::crearCaja() {
 	}
 
 	try {
-		_sem.crear(semCaja,1);
+		_semAdmin.crear(semAdminCaja,1);
 	} catch(std::string& msg) {
 		Logger::error(msg, me);
 		exit(3);
 	}
-	Logger::debug("Semaforo creado", me);
+
+	try {
+		_semEmp.crear(semEmpCaja,1);
+	} catch(std::string& msg) {
+		Logger::error(msg, me);
+		exit(4);
+	}
+
+	Logger::debug("Semaforos creados", me);
 	Logger::notice("Se ha inicializado la caja registradora correctamente", me);
 
 }
@@ -57,24 +65,40 @@ void CajaRegistradora::inicializarCaja() {
 		throw _msg;
 	}
 
-	Logger::debug("Memoria compartida creada. Se creará el semáforo para sync de usuarios", me);
-	std::ofstream archSem(semCaja.c_str());
-	if (archSem.fail() || archSem.bad()) {
+	Logger::debug("Memoria compartida creada. Se crearán los semaforos para sync de admin y employees", me);
+	std::ofstream archSemAdmin(semAdminCaja.c_str());
+	if (archSemAdmin.fail() || archSemAdmin.bad()) {
+		std::string _msg = std::string("Error creando archivo para semaforo del admin de la caja registradora. Error: ") + std::string(strerror(errno));
+		Logger::error(_msg, me);
+		throw _msg;
+	}
+	std::ofstream archSemEmp(semEmpCaja.c_str());
+	if (archSemEmp.fail() || archSemEmp.bad()) {
 		std::string _msg = std::string("Error creando archivo para semaforo de la caja registradora. Error: ") + std::string(strerror(errno));
 		Logger::error(_msg, me);
 		throw _msg;
 	}
 
 	try {
-		_sem.crear(semCaja, 1);
+		_semAdmin.crear(semAdminCaja, 1);
 	} catch(std::string& msg) {
-		std::string _msg = std::string("Error creando semaforo para la caja registradora");
+		std::string _msg = std::string("Error creando semaforo del admin para la caja registradora");
 		Logger::error(_msg, me);
 		throw _msg;
 	}
-	Logger::debug("Semaforo creado", me);
+
+	try {
+		_semEmp.crear(semEmpCaja, 1);
+	} catch(std::string& msg) {
+		std::string _msg = std::string("Error creando semaforo de empleados para la caja registradora");
+		Logger::error(_msg, me);
+		throw _msg;
+	}
+
+	Logger::debug("Semaforos creado", me);
 	arch.close();
-	archSem.close();
+	archSemAdmin.close();
+	archSemEmp.close();
 	Logger::notice("Se ha inicializado la caja registradora correctamente", me);
 
 }
@@ -82,26 +106,30 @@ void CajaRegistradora::inicializarCaja() {
 void CajaRegistradora::destruirCaja() {
 	_caja.liberar();
 	remove(shmemCaja.c_str());
-	remove(semCaja.c_str());
-	_sem.eliminar();
+	remove(semAdminCaja.c_str());
+	remove(semEmpCaja.c_str());
+	_semAdmin.eliminar();
+	_semEmp.eliminar();
 }
 
 double CajaRegistradora::consultarMonto() const {
 	double monto;
-	_sem.p();
+	_semAdmin.p();
 	// TODO: Ver cuanto sleepea en la caja
 	sleep(3);
 	monto = _caja.leer();
-	_sem.v();
+	_semAdmin.v();
 	return monto;
 }
 
 void CajaRegistradora::depositar(const double monto) {
 	std::string me = this->me + ":depositar";
-	_sem.p();
+	_semEmp.p();
+	_semAdmin.p();
 	double montoActual = _caja.leer();
 	_caja.escribir(montoActual + monto);
 	montoActual = _caja.leer();
 	Logger::notice(std::string("La caja ahora contiene ") + toString(montoActual), me);
-	_sem.v();
+	_semAdmin.v();
+	_semEmp.v();
 }

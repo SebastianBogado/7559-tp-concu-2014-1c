@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 //				leyendo = false;
 		} else {
 			std::stringstream ss;
-			ss << "Leí del fifo: " << automovil.id;
+			ss << "Leí de la cola: " << automovil.id;
 			if (automovil.esVip) ss << " (VIP)";
 			Logger::debug(ss.str(), me);
 			int for_empleado_id = grillaJefe.getEmpleadoLibre();

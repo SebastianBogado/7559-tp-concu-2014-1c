@@ -18,8 +18,11 @@ const std::string logFile = "log.txt";
 // Archivo para la memoria compartida de la caja
 const std::string shmemCaja = "/tmp/shmemCaja";
 
-// Archivo para el semaforo de la shmem de la caja
-const std::string semCaja = "/tmp/semCaja";
+// Archivo para el semaforo del admin de la shmem de la caja
+const std::string semAdminCaja = "/tmp/semAdminCaja";
+
+// Archivo para el semaforo de los empleados de la shmem de la caja
+const std::string semEmpCaja = "/tmp/semEmpCaja";
 
 // Archivo para la cola entre input<->jefeEstacion
 const std::string colaInputJefe = "/tmp/colaInputJefe";
