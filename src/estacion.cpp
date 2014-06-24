@@ -168,6 +168,7 @@ int main(int argc, char* argv[]) {
 	
 	try {
 		colaAutosJefe.destruir();
+		unlink(colaInputJefe.c_str());
 		caja.destruirCaja();
 		Logger::debug("La caja registradora se ha destruido por completo", me);
 		grilla.destruir(parser.cantEmpleados());

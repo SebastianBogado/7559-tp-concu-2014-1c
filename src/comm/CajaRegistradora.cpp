@@ -115,8 +115,6 @@ void CajaRegistradora::destruirCaja() {
 double CajaRegistradora::consultarMonto() const {
 	double monto;
 	_semAdmin.p();
-	// TODO: Ver cuanto sleepea en la caja
-	sleep(3);
 	monto = _caja.leer();
 	_semAdmin.v();
 	return monto;

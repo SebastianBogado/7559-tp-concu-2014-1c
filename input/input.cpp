@@ -22,9 +22,9 @@
 // Constantes de configuracion
 // Minimo y maximo delay entre la llegada de autos consecutivos
 const int min_delay_default = 1;
-const int max_delay_default = 5;
+const int max_delay_default = 2;
 const int cant_autos_default = 10;
-const float porcentaje_vip_default = 0.1;
+const float porcentaje_vip_default = 0.5;
 
 int main(int argc, const char* argv[]) {
 	

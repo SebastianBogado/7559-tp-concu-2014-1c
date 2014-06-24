@@ -71,10 +71,11 @@ int main(int argc, char* argv[]) {
 			}else{
 				grillaJefe.asignarTrabajo(automovil.id, for_empleado_id);
 				ss.str("");
-				ss << "Se asigno el auto " << automovil.id + (automovil.esVip ? " (VIP)" : "") << " al empleado " << for_empleado_id;
+				ss << "Se asigno el auto " << automovil.id << (automovil.esVip ? " (VIP)" : "") << " al empleado " << for_empleado_id;
 				Logger::debug(ss.str(), me);
 			}
 		}
+		sleep(5);
 	}
 	
 	grillaJefe.avisarTerminarTrabajo(cantEmpleados);
