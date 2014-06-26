@@ -56,6 +56,6 @@ typedef struct automovil {
 	bool esVip;
 } automovil;
 
-const automovil automovilFinal = { -1, true };
+const automovil automovilFinal = { -1, false };
 
 #endif
